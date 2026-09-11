@@ -17,7 +17,10 @@ export default function EventPage() {
 
   useEffect(() => {
     async function getEvent() {
-      const response = await fetch(`${SUPABASE_URL}/events?id=eq.${eventId}`, { headers });
+      const response = await fetch(
+        `${SUPABASE_URL}/events?select=id,title,summary,description,date,category,image,price,venue:venues(name,address,postalCode,city,website)&id=eq.${eventId}`,
+        { headers },
+      );
       const data = await response.json();
       setEvent(data[0]);
     }
@@ -103,17 +106,22 @@ export default function EventPage() {
               </p>
               <p>
                 <strong>Sted</strong>
-                <span>
-                  {event.venueName}
-                  <br />
-                  {event.venueAddress}, {event.venuePostalCode} {event.venueCity}
-                  {event.venueWebsite && (
-                    <>
-                      <br />
-                      <a href={event.venueWebsite}>Besøg venue</a>
-                    </>
-                  )}
-                </span>
+                {event.venue ? (
+                  <span>
+                    {event.venue.name}
+                    <br />
+                    {event.venue.address}, {event.venue.postalCode}{" "}
+                    {event.venue.city}
+                    {event.venue.website && (
+                      <>
+                        <br />
+                        <a href={event.venue.website}>Besøg venue</a>
+                      </>
+                    )}
+                  </span>
+                ) : (
+                  <span>Sted ikke angivet</span>
+                )}
               </p>
               <p>
                 <strong>Pris</strong>
