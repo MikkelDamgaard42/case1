@@ -29,8 +29,8 @@ Dette er forventet potentiale, ikke målt effekt. Der findes ingen dokumenterede
 ## Resterende udfordringer
 
 - Event-state-reset ved langsomt eventskift og fejl → gyldigt event mangler browserverifikation.
-- Den dokumenterede tilmeldingstest blev udført før de seneste frontendændringer.
+- Lokale validerings-/netværkstests gælder en tidligere version; det normale tilmeldingsflow er også kontrolleret senere online.
 - Deployment blev rapporteret som succesfuld, men den nyeste publicerede version er ikke fuldt browserauditeret.
-- Der mangler automatiske browser- og integrationstests.
+- Der er ingen automatiske browser- og integrationstests; skabelonen accepterer også relevant manuel evidens.
 - Frisk databaseopsætning med `starter.sql` er ikke afprøvet i en tom PostgreSQL-database.
 - Fuld accessibility-compliance er ikke dokumenteret.

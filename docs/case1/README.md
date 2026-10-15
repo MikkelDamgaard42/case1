@@ -10,6 +10,8 @@ Samlet dokumentation og råmateriale for Case 1. Dette er ikke den endelige port
 
 ## Dokumentation
 
+- [Audit sammenholdt med underviserens trin 1–6](audit-trin-1-6.md)
+
 - [Teknisk audit og prioritering](forbedringsoversigt.md)
 - [Datamodel og relationer](datamodel.md)
 - [Verifikation af tilmeldingsflow](tilmeldingsflow-verifikation.md)
