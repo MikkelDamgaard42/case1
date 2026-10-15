@@ -1,28 +1,41 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const headers = {
-  apikey: import.meta.env.VITE_SUPABASE_APIKEY,
-  "Content-Type": "application/json"
-};
+import { fetchSupabase } from "../lib/supabase";
 
 export default function HomePage() {
   const [events, setEvents] = useState([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Alle");
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
+    const controller = new AbortController();
+
     async function getEvents() {
-      const response = await fetch(
-        `${SUPABASE_URL}/events?select=id,title,summary,date,category,image,venue:venues(name)&order=date.asc`,
-        { headers },
-      );
-      const data = await response.json();
-      setEvents(data);
+      try {
+        const response = await fetchSupabase(
+          "/events?select=id,title,summary,date,category,image,venue:venues(name)&order=date.asc",
+          { signal: controller.signal },
+        );
+        const data = await response.json();
+        setEvents(data);
+      } catch (error) {
+        if (controller.signal.aborted) {
+          return;
+        }
+        console.error("Could not load events", error.details || error);
+        setErrorMessage("Events kunne ikke hentes lige nu. Prøv igen senere.");
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
     }
 
     getEvents();
+
+    return () => controller.abort();
   }, []);
 
   const categories = ["Alle", ...new Set(events.map((event) => event.category))];
@@ -69,18 +82,23 @@ export default function HomePage() {
         </section>
 
         <section className="filters">
-          <label>
+          <label htmlFor="event-search">
             Søg
             <input
               type="search"
+              id="event-search"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Søg efter titel eller sted"
             />
           </label>
-          <label>
+          <label htmlFor="event-category">
             Kategori
-            <select value={category} onChange={(event) => setCategory(event.target.value)}>
+              <select
+                id="event-category"
+                value={category}
+                onChange={(event) => setCategory(event.target.value)}
+              >
               {categories.map((item) => (
                 <option key={item}>{item}</option>
               ))}
@@ -89,9 +107,25 @@ export default function HomePage() {
         </section>
 
         <section className="event-grid">
-          {filteredEvents.map((event) => (
+          {isLoading && (
+            <p className="form-message" role="status">
+              Henter events...
+            </p>
+          )}
+          {!isLoading && errorMessage && (
+            <p className="form-message" role="alert">
+              {errorMessage}
+            </p>
+          )}
+          {!isLoading && !errorMessage && events.length === 0 && (
+            <p className="form-message">Der er ingen events endnu.</p>
+          )}
+          {!isLoading && !errorMessage && events.length > 0 && filteredEvents.length === 0 && (
+            <p className="form-message">Ingen events matcher din søgning.</p>
+          )}
+          {!isLoading && !errorMessage && filteredEvents.map((event) => (
             <article className="event-card" key={event.id}>
-              <img src={event.image} alt="" />
+              <img src={event.image} alt={event.title} loading="lazy" />
               <div className="event-card-content">
                 <p className="event-category">{event.category}</p>
                 <h3>{event.title}</h3>
