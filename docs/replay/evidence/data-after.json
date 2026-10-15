@@ -1,0 +1,1 @@
+[{"rows":[{"events":9,"venues":7,"registrations":2,"linked_events":9,"linked_registrations":2}],"fields":[{"name":"events","dataTypeID":20},{"name":"venues","dataTypeID":20},{"name":"registrations","dataTypeID":20},{"name":"linked_events","dataTypeID":20},{"name":"linked_registrations","dataTypeID":20}],"command":"SELECT","affectedRows":0,"rowCount":1}]

@@ -1,0 +1,21 @@
+[
+  {
+    "test": "missing event",
+    "sqlstate": "23502",
+    "result": "null value in column \"eventId\" of relation \"registrations\" violates not-null constraint"
+  },
+  {
+    "test": "nonexistent event",
+    "sqlstate": "23503",
+    "result": "insert or update on table \"registrations\" violates foreign key constraint \"registrations_eventId_fkey\""
+  },
+  {
+    "counts": [
+      {
+        "events": 9,
+        "venues": 7,
+        "registrations": 2
+      }
+    ]
+  }
+]
