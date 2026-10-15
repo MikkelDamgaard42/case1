@@ -25,3 +25,11 @@ Testserveren i test-server.mjs bruger PGlite 0.5.10 (den faktisk installerede ve
 5. Til production preview: build med de samme test-envværdier, kopiér dist/index.html til dist/404.html som workflowet gør, og kør npm run preview på port 5192.
 
 Adapteren understøtter kun projektets konkrete requests; den er ikke fuld PostgREST. /__sql og /__control er testværktøjer og må aldrig deployes som service. Vites normale build inkluderer kun index.html-appens imports, ikke disse dokumentationsfiler.
+
+## Ny live-verifikation efter publicering
+
+GitHub Actions-run [38758122358](https://github.com/MikkelDamgaard42/case1/actions/runs/38758122358) blev kontrolleret via GitHub API. Deploy-job og alle trin, herunder Deploy to GitHub Pages, sluttede med success for e0f5e16c8a7fa897a454a3fd067d419e437f385c.
+
+Derefter blev den publicerede /case1/events/9 åbnet i browseren og viste Søndagsjazz ved åen med relaterede venuedata. En ny fiktiv Replay deployment test blev indsendt til live Supabase: success blev vist. Oversigten blev åbnet og genindlæst; rækken blev igen hentet med Søndagsjazz ved åen, 15.11.2026 og Ny. Evidens: [kun den fiktive række og tabelheader](evidence/live-replay-after-reload.png). Ingen eksisterende tilmeldinger blev ændret eller slettet. Dette er normal-flow-verifikation mod faktisk Supabase, til forskel fra de kontrollerede fejltests med lokal adapter.
+
+Efterfølgende dokumentationscommits ændrer ikke appens src, buildkonfiguration eller database. Fuld siteaudit, skærmlæser og performancemålinger er fortsat udenfor det verificerede scope.
