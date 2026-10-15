@@ -1,11 +1,23 @@
-# 2. Fra konsollog til gemt og relateret tilmelding
+# 2. Tilmelding og arrangøroverblik
 
-Førgrundlag: README-audit og baseline-form.png er committed før arbejdet. Datamodelbranchen er allerede testet og merged. Kode fra tidligere kendt commit b534398 genbruges som implementeringsreference; dette fremstilles ikke som ny opfindelse.
+## Ændring
 
-Løsning: POST med name/email/status/eventId, normal validering, pending og feedback; event/venue samt tilmelding/event hentes relationelt. Efter tilpasningen fjernes kopifelterne lokalt med migration 002. Frisk starter.sql er nu normaliseret.
+Formularens konsollog blev erstattet med en POST-request med `name`, `email`, `status` og `eventId`. Formularen validerer input, viser feedback og deaktiverer knappen, mens svaret afventes.
 
-Faktisk browsertest på denne branch: event 9 viste Åboulevarden med adresse; Replay Test blev indsendt, succes viste sig og felterne blev tømt. Intern oversigt viste 3 tilmeldinger og den nye række med Søndagsjazz ved åen, 15.11.2026 og Ny. Reload af oversigten bevarede rækken. Network-log viser POST 201 med eventId=9 og efterfølgende GET. Før var der 2 rækker og ingen POST. Skærmbilleder: registration-success.png og registration-after-reload.png.
+Events henter stedoplysninger gennem relationen til `venues`. Oversigten henter eventtitel og dato gennem tilmeldingens eventrelation. Efter frontendtilpasningen fjernede migration 002 kopifelterne. Den tidligere implementering i `b534398` blev brugt som reference.
 
-Frisk normaliseret starter.sql blev afprøvet i tom isoleret PostgreSQL; antal og constraints består igen. Lint/build bestod. Live Supabase er ikke ændret; adapteren er ikke en fuld PostgREST-integrationstest.
+## Test og resultat
 
-Værdi: brugeren kan gennemføre en gemt tilmelding, og arrangøren får relaterede eventdata uden kopifelter. Robust GET, formularsemantik og event-state er bevidst næste afgrænsede forbedringer.
+Testen blev kørt efter datamodelændringen og før merge:
+
+- Event 9 viste Åboulevarden med adresse.
+- Den fiktive tilmelding “Replay Test” gav en succesbesked og tømte felterne.
+- Oversigten gik fra to til tre tilmeldinger. Den nye række viste Søndagsjazz ved åen, 15.11.2026 og status Ny.
+- Rækken blev hentet igen efter genindlæsning.
+- Netværksloggen viste POST 201 med `eventId=9` og efterfølgende GET.
+
+Billeder: [succesbesked](evidence/registration-success.png) og [oversigt efter genindlæsning](evidence/registration-after-reload.png).
+
+Frisk databaseopsætning og databasebegrænsninger blev testet igen. Lint og build bestod. Denne test brugte den lokale adapter og ændrede ikke Supabase; den senere [onlinetest](05-production.md#kontrol-efter-publicering) kontrollerede tilmeldingen mod Supabase.
+
+Brugeren kan nu gemme sin tilmelding, og arrangøren ser den sammen med det rigtige event uden kopierede eventdata.

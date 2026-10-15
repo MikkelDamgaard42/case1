@@ -1,11 +1,19 @@
-# 4. Event-state i samme React-session
+# 4. Nulstilling ved eventskift
 
-Forudgående audit registrerer risikoen ved genbrugt state. Implementering genbruger den kendte route-key-løsning fra 4938707. App.jsx er den eneste produktionsfil i denne forbedring.
+## Ændring
 
-Testindgangen navigation-harness.html/jsx tilføjer React Link-navigation uden at ændre produktets UI. Åbn testindgangen i dev-serveren, vælg event 9, udfyld kun blanktegn som navn og fremkald formularfejl. Indstil adapteren til 3500 ms GET-forsinkelse og klik event 1. Ingen fuld sidenavigation/reload foretages under disse klik.
+En `key` baseret på `eventId` nulstiller eventsiden, når brugeren skifter event. Det forhindrer, at tidligere eventindhold og formularfeedback følger med. Ændringen ligger i `App.jsx` og bygger på løsningen fra `4938707`.
 
-Faktisk resultat før merge: efter skift vises kun Henter event, ikke event 9 eller tidligere formularfejl. Efter svar vises Lyd mellem husene med tomt navnefelt. Skift til ukendt event viser not-found; efterfølgende skift til event 9 viser gyldigt event uden gammel not-found-state. Screenshots: state-switch-loading.png og state-recovered-event.png.
+## Test og resultat
 
-Valideringen af blankt navn blev samtidig observeret med dansk alert. Lint/build bestod. Testen dokumenterer state-reset med tidligere fejlfeedback, men der er ikke lavet en særskilt test af et allerede igangværende POST under unmount. Testindgangen er kun udviklingsdokumentation og indgår ikke i Vites normale index.html-build.
+Testindgangen `navigation-harness.html/jsx` gjorde det muligt at skifte med React Link i samme session uden at ændre appens brugerflade:
 
-Værdi: loading, event og formularfeedback følger route-id frem for det tidligere event. Ingen ændring i database eller payload.
+1. Åbn event 9, indtast kun mellemrum som navn, og fremkald formularfejlen.
+2. Indstil adapteren til 3.500 ms GET-forsinkelse, og skift til event 1 uden fuld genindlæsning.
+3. Kontrollér, at kun “Henter event” vises under ventetiden.
+4. Kontrollér, at Lyd mellem husene derefter vises med et tomt navnefelt.
+5. Skift til et ukendt event og tilbage til event 9.
+
+Det tidligere event og dets formularfejl forsvandt ved skiftet. Efter sidste skift blev det gyldige event vist uden fejltilstanden fra det ukendte event. Billeder: [ventetilstand](evidence/state-switch-loading.png) og [gyldigt event efter skift](evidence/state-recovered-event.png).
+
+Lint og build bestod. Testen omfattede tidligere formularfeedback, men ikke et igangværende POST-kald under eventskift. Testindgangen er et udviklingsværktøj og indgår ikke i appens normale build.

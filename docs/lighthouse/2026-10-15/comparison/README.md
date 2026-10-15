@@ -1,59 +1,77 @@
-# Mellemrum — rekonstrueret før/efter-måling
+# Lighthouse: oprindelig prototype og færdig version
 
-Målt 15. oktober 2026 kl. **23:24:58–23:26:54, Europe/Copenhagen (CEST)**. Der er gennemført 12 nye lokale Lighthouse-kørsler: tre pr. side og version. Tidspunkter er Lighthouse fetchTime, ikke rapportens skrivetid. Dette er en efterfølgende rekonstruktion, ikke en historisk måling fra før udviklingsarbejdet.
+Den 15. oktober 2026 kl. 23:24:58–23:26:54 dansk sommertid blev begge versioner målt lokalt under samme forhold. Der blev kørt tre Lighthouse-tests pr. side og version, i alt 12 målinger. Den oprindelige kode blev bygget igen til sammenligningen; baseline er derfor målt efter udviklingsarbejdet, ikke før det begyndte.
 
-## Versioner og begrundelse
+Sammenligningen afslørede et layoutskift på eventsiden. Det blev [rettet og målt separat bagefter](../cls-fix/README.md). Tabellen nedenfor viser versionen **før** den rettelse.
 
-- **Baseline: `f25fde8dec21b5d13fcca7bd7002d76de9c6cea1` — Initial commit.** Repositoryets rodcommit indeholder den udleverede prototype, den flade datamodel og formularens `console.log` uden lagring. Den eksisterende audit og replay-dokumentation identificerer samme commit som oprindelig kildekode/startpunkt. Den senere `8b529b2` ændrer kun base-sti og lockfil; der er ingen ændringer i src, index.html, vite.config.js eller schema mellem de to. `5123b7d` tilføjer senere baseline-dokumentation, men har identiske app-/buildfiler med rodcommittet. Derfor vælges det oprindelige rodcommit, ikke en efterfølgende dokumentationscommit eller en allerede optimeret version.
-- **Færdig version: `da11872` — Record successful replay deployment and live registration reload.** Den fulde SHA står i manifest.json. Det er det eksisterende checkout og origin/main's committede version ved undersøgelsen. Den ukommittede ændring i src/pages/EventPage.jsx er bevidst ikke inkluderet.
-- Det præcise commit bag underviserens offentlige prototype kan ikke fastslås alene fra disse lokale Git-data. Baseline-valget dokumenterer repositoryets oprindelige udleverede kode, ikke en verificeret historisk online-deployment.
+## Versioner
+
+- **Oprindelig prototype: `f25fde8`.** Repositoryets første commit indeholder den udleverede kode, den flade datamodel og formularens `console.log` uden lagring. Audit og Git-sammenligninger peger på samme startpunkt. `8b529b2` ændrer base-sti og lockfil, og `5123b7d` tilføjer dokumentation; ingen af dem er en tidligere appversion end rodcommittet. Se [Git-kontrollen](baseline-evidence.txt).
+- **Færdig version før CLS-rettelsen: `da11872`.** Den committede version ved sammenligningen. Den lokale, ukommittede formateringsændring i `EventPage.jsx` indgår ikke her. Fuld SHA og buildoplysninger findes i [manifest.json](manifest.json).
+
+Commit-versionen bag underviserens offentlige prototype er ikke verificeret. Sammenligningen gælder repositoryets kode og må ikke læses som en historisk måling af underviserens hosting.
 
 ## Medianer af tre målinger
 
-Hver metrik er beregnet separat som median af de tre råværdier. LCP og TBT er tidsmål; lavere er bedre. Scores er ud af 100; højere er bedre.
+Hver metrik er beregnet som medianen af sine tre råværdier. Lavere LCP, CLS og TBT er bedre; højere scores er bedre.
 
 | Side | Version | Performance | LCP | CLS | TBT | Accessibility | Best Practices | SEO |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Forside | Baseline | 83 | 4,640 s | 0 | 0 ms | 100 | 100 | 100 |
-| Forside | Færdig | 81 | 5,225 s | 0 | 0 ms | 100 | 100 | 100 |
-| Event 9 | Baseline | 78 | 5,870 s | 0 | 0 ms | 100 | 100 | 100 |
-| Event 9 | Færdig | 56 | 5,830 s | 0,601 | 0 ms | 100 | 100 | 100 |
+| Forside | Oprindelig | 83 | 4,640 s | 0 | 0 ms | 100 | 100 | 100 |
+| Forside | Færdig før CLS-rettelse | 81 | 5,225 s | 0 | 0 ms | 100 | 100 | 100 |
+| Event 9 | Oprindelig | 78 | 5,870 s | 0 | 0 ms | 100 | 100 | 100 |
+| Event 9 | Færdig før CLS-rettelse | 56 | 5,830 s | 0,601 | 0 ms | 100 | 100 | 100 |
 
-## Kort før/efter-vurdering
+## Hvad viste sammenligningen?
 
-- **Forsiden er ikke hurtigere på de målte medianer:** Performance falder 2 point, og LCP stiger 0,585 s. Baselinens LCP varierer dog fra 4,582 til 5,817 s og overlapper slutversionens interval 5,202–5,230 s. Tre kørsler og eksterne billeder giver ikke grundlag for at tilskrive den lille scoreforskel sikkert til kodeændringer alene.
-- **Der er en konkret reduktion i indlæste billeddata på forsiden:** 10 billedrequests mod 6, cirka 8,01 MB mod 3,49 MB i billedressourcer. Den færdige version har loading="lazy" på eventkortene; baseline indlæser dem uden lazy loading. Samlet overført datamængde falder fra median 8,115 MB til 3,589 MB. Det er færre bytes ved denne indledende mobilindlæsning, ikke bevis for en hurtigere LCP eller lavere total ved gennemscrollning af hele siden.
-- **Eventsiden er tydeligt dårligere på layoutstabilitet:** Performance falder 22 point, og CLS går fra 0 til 0,601 i alle tre gentagelser. Lighthouse peger på footer.site-footer som den forskudte node. Slutversionen viser footer under eventets loadingtilstand, mens baseline returnerer null indtil eventet er hentet; det peger på indlæsningslayoutet som mulig forklaring. Ingen rettelse er udført.
-- Eventets LCP falder kun cirka 40 ms og vurderes i praksis som omtrent uændret. Det store eventbillede er fortsat LCP-element, og Lighthouse estimerer cirka 581 KiB i mulige billedbesparelser i begge versioner.
-- **Uændret:** TBT er 0 ms, og Accessibility, Best Practices og SEO er 100 i alle 12 kørsler. Automatiske accessibility-scores dokumenterer ikke fuld WCAG-overholdelse. Disse navigationstests måler ikke korrekt formularlagring, fejlhåndtering, tastaturflows eller databasens normalisering.
+**Forsiden indlæste færre billeddata, men var ikke hurtigere i målingerne.** Performance faldt fra 83 til 81, og median LCP steg fra 4,640 til 5,225 sekunder. Intervallerne overlappede: 4,582–5,817 sekunder for den oprindelige version og 5,202–5,230 for slutversionen. Den lille scoreforskel kan derfor ikke sikkert forklares med kodeændringerne alene.
 
-## Ens testopsætning
+Med lazy loading faldt antallet af billedrequests ved den første mobilindlæsning fra ti til seks. Billeddata faldt fra cirka 8,01 til 3,49 MB, og den samlede overførsel fra median 8,115 til 3,589 MB. Det siger ikke noget om den samlede datamængde, hvis brugeren ruller gennem hele siden.
 
-- En separat lokal Git-kopi med to detached worktrees under denne mappe. Det eksisterende case1-checkout bruges kun til læsning. Ingen kildefiler eller lockfiler er ændret i worktrees.
-- `npm ci` fra hver versions lockfil. De installerede dependency-versioner er identiske. Node 24.13.0, Vite 8.2.1 i begge builds.
-- Begge er **production builds** med `npm run build -- --base=/case1/`. Samme CLI-base tilsidesætter baseline-pakkens /mellemrum/ uden at redigere filer. Samme build-env: VITE_SUPABASE_URL=http://127.0.0.1:5270/api og en ufølsom lokal dummy-API-key.
-- Samme skrivebeskyttede statiske server, origin og port for begge: **http://127.0.0.1:5270/case1/** og **http://127.0.0.1:5270/case1/events/9**. Serveren skifter udelukkende dist-rod mellem kørslerne. Identiske MIME-, gzip- og no-store-regler; lokale SPA-dokumenter returnerer 200.
-- Lighthouse **13.5.0**, installeret Chrome **155.0.8059.41** (rapportens host-UA: HeadlessChrome/155.0.0.0). Navigation mode, mobilprofil **412 × 823**, device scale factor **1,75**, Moto G Power-emulering. Simuleret throttling: **150 ms RTT, 1.638,4 Kbps, 4× CPU**. Samme effektive konfiguration er maskinelt kontrolleret i alle 12 rapporter; se effective-settings.json.
-- Ny midlertidig Chrome-profil pr. kørsel, ingen udvidelser/login, normal storage reset. Ingen ignore-status-code, score- eller audit-undtagelser. Ingen parallelle målinger. Versionsrækkefølgen skifter mellem runderne; se run-plan.json. Der er ikke udført ændringer i kildekode eller deployment.
+**Eventsiden fik et layoutskift.** CLS steg fra 0 til 0,601 i alle tre gentagelser, og Performance faldt fra 78 til 56. Lighthouse registrerede footeren som det flyttede element. Det voksende indhold under datahentning blev efterfølgende fundet som årsagen og rettet; se [CLS-rettelsen](../cls-fix/README.md).
+
+Eventets LCP var næsten det samme: 5,870 mod 5,830 sekunder. Det store eventbillede var fortsat LCP-elementet. Lighthouse anslog cirka 581 KiB i mulige billedbesparelser i begge versioner.
+
+TBT var 0 ms, og Accessibility, Best Practices og SEO var 100 i alle 12 målinger. Testene kontrollerer indlæsning og automatiske audits, ikke formularlagring, fejlhåndtering eller databasens relationer. En Accessibility-score på 100 dokumenterer ikke fuld WCAG-overholdelse.
+
+## Testopsætning
+
+Versionerne blev bygget i to separate worktrees med `npm ci` fra deres lockfiler. Installerede pakkeversioner var identiske; Node var 24.13.0 og Vite 8.2.1.
+
+Begge production builds brugte `npm run build -- --base=/case1/`. Det gav samme base-sti uden at ændre kildefiler. Miljøværdierne pegede på `http://127.0.0.1:5270/api` med en lokal testnøgle.
+
+Samme server skiftede buildmappe mellem kørslerne. Adresserne var:
+
+- `http://127.0.0.1:5270/case1/`
+- `http://127.0.0.1:5270/case1/events/9`
+
+MIME-typer, gzip og `no-store` var ens. Serverens SPA-fallback returnerede HTTP 200.
+
+Lighthouse 13.5.0 og Chrome 155.0.8059.41 blev brugt med mobilprofil 412 × 823, DPR 1,75 og Moto G Power-emulering. Netværket blev simuleret med 150 ms RTT og 1.638,4 Kbps samt 4× CPU-nedskalering. [effective-settings.json](effective-settings.json) viser de ens indstillinger i alle rapporter.
+
+Hver kørsel brugte en ny Chrome-profil uden login eller udvidelser og med nulstillet lager. Målingerne kørte efter hinanden, og versionsrækkefølgen skiftede mellem runderne; se [run-plan.json](run-plan.json). Ingen målinger brugte `--ignore-status-code`.
 
 ## Data og begrænsninger
 
-- Identiske ni events og samme event 9, **Søndagsjazz ved åen**, udtrukket fra f25fde8:supabase/starter.sql. Samme titler, datoer, beskrivelser, venuedata, priser og originale billed-URL'er. Begge eventvisninger er kontrolleret, og viewportbilleder fra runde 2 er gemt.
-- En skrivebeskyttet lokal REST-fixture leverer baseline-felterne fladt og slutversionens venue som et relateret objekt. Slutversionens select-projektion respekteres, så dens mindre API-svar bevares. Begge får en fast **100 ms adapterforsinkelse**. Ingen migrationer, live-dataændringer eller formularindsendelser udføres.
-- Denne adapter er **ikke Supabase/PostgREST** og måler ikke database-, RLS-, DNS-, TLS-, CORS- eller live-netværksperformance. Normaliseringens eventuelle servereffekt er ikke dokumenteret af denne test.
-- De oprindelige billeder hentes stadig eksternt fra Unsplash. Alle målte requests lykkedes; eventbilledets resourceSize var identisk på tværs af alle seks eventkørsler. En lille variation i baselinens samlede billedbytes blev observeret på forsiden. CDN-responser og øvrig maskinbelastning er ikke fuldt kontrollerede. Resultaterne er laboratoriemålinger med tre observationer, ikke field data eller statistisk sikker kausal effekt.
-- Lokal localhost/HTTP, kontrollerede data, base-override og lokale serverheaders gør forholdene ens mellem versionerne, men de er ikke identiske med offentlig hosting. Ingen af medianerne sammenlignes med den tidligere offentlige måling.
+Begge versioner fik de samme ni events fra den oprindelige `starter.sql`, herunder event 9, Søndagsjazz ved åen. En lokal REST-adapter leverede den oprindelige flade datamodel eller den nye relationelle model med samme faste forsinkelse på 100 ms. Slutversionens mindre API-svar blev bevaret. Der blev ikke sendt tilmeldinger under målingerne.
 
-## Særskilt deploymentfund: offentlig HTTP 404
+Adapteren er ikke Supabase/PostgREST. Testen måler derfor ikke effekten af databasen, adgangsregler eller det offentlige API. Billederne blev hentet fra Unsplash, og alle billedrequests lykkedes. Eventbilledets størrelse var ens i alle seks eventmålinger; forsidens billeddata varierede lidt. Eksterne billedservere og computerens belastning kan påvirke resultaterne.
 
-Den offentlige eventadresse https://mikkeldamgaard42.github.io/case1/events/9 returnerede HTTP 404 ved den tidligere offentlige kontrol, selvom SPA-fallbacken viser eventet. Det stoppede en normal Lighthouse-navigation; en separat diagnostisk kørsel måtte tillade fejlstatus. Dette er et **fortsat særskilt deploymentfund**. Den lokale servers 200-fallback skjuler det og forklarer, hvorfor lokale Best Practices/SEO-scores på 100 ikke løser eller afkræfter den offentlige 404. Ingen deploymentændring er foretaget.
+Tre lokale målinger pr. side giver et sammenligningsgrundlag under faste indstillinger, men viser ikke oplevelsen hos alle brugere. De lokale medianer er ikke sammenlignet direkte med den offentlige måling.
 
-## Rapporter og reproduktion
+## Den offentlige eventroute returnerer HTTP 404
 
-- [Rå målinger som CSV](runs.csv), [medianer og differencer som JSON](summary.json), [alle måletidspunkter](results.jsonl).
-- [Baseline-begrundelse fra Git](baseline-evidence.txt), [build/dependency/fixture-manifest](manifest.json), [kontrol af uændret checkout](preservation-check.json).
-- [Effektiv Lighthouse-konfiguration](effective-settings.json), [billedrequests pr. kørsel](network-images.json), [serverlog](server-requests.jsonl).
-- HTML/JSON-rapporter, Chrome-spor og DevTools-log ligger under reports/. Data og måleværktøjer ligger ved siden af denne fil. Kør server.mjs og derefter run-comparison.mjs for at gentage efter builds; gentag ikke runneren uden først at flytte/tømme dens eksisterende resultatfiler, da den tilføjer til results.jsonl. Der ændres ikke i appkoden.
+[Den offentlige eventadresse](https://mikkeldamgaard42.github.io/case1/events/9) returnerede HTTP 404, selvom browseren viste eventet via SPA-fallbacken. Det stoppede standardtesten. Den særskilte offentlige måling tillod derfor fejlstatus.
+
+Den lokale servers HTTP 200 forklarer, hvorfor de lokale Best Practices- og SEO-scores ikke viser denne fejl. Den senere CSS-rettelse løste layoutskiftet, men ikke HTTP-statussen.
+
+## Rapporter og genkørsel
+
+- [Rå målinger som CSV](runs.csv), [medianer og forskelle](summary.json) og [tidspunkter](results.jsonl).
+- [Git-grundlag](baseline-evidence.txt), [build- og datagrundlag](manifest.json) og [kontrol af checkout](preservation-check.json).
+- [Lighthouse-indstillinger](effective-settings.json), [billedrequests](network-images.json) og [serverlog](server-requests.jsonl).
+
+HTML- og JSON-rapporter samt Chrome-spor ligger i `reports/`. Testværktøjerne ligger ved siden af denne fil. De oprindelige worktrees var midlertidige og er ikke med i arkivet: genskab dem og deres builds, eller tilpas stierne i værktøjerne før genkørsel. Start derefter `server.mjs` og `run-comparison.mjs` med samme indstillinger. Runneren føjer til `results.jsonl`; gem eksisterende resultater separat før en ny serie, så målingerne ikke blandes.
 
 ### Forside
 

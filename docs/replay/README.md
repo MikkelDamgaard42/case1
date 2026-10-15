@@ -1,66 +1,60 @@
-# Ny optimeringsrunde — startet 15. oktober 2026
+# Mellemrum: ændringer og test
 
-Dette er en reel ny gennemgang fra f25fde8 efter et tidligere gennemført projekt. Den tidligere løsning bruges som kendt reference, ikke som nyopdaget arbejde. Oprindelig main, live Supabase, stash, lokale ændringer og portfolio bevares.
+Mellemrum blev videreudviklet fra den udleverede React-prototype. Målet var at få tilmeldinger gemt korrekt, samle gentagne oplysninger i databasen og give brugeren feedback ved ventetid og fejl.
 
-## Trin 1–2: scope og baseline før nye kodeændringer
+Den første implementering var utilstrækkeligt dokumenteret. Kodeændringerne blev derfor gennemført igen fra startkoden den 15. oktober 2026, med audit før ændringerne og test før hver merge. Erfaringer og løsninger fra første implementering indgik i arbejdet. Denne mappe dokumenterer den gentagne implementering.
 
-Formål/målgrupper: lokale eventbesøgende og sekundært arrangører. Scope: eventvisning, tilmelding, arrangøroverblik, datamodel, robuste states, accessibility og deployment. Betaling/login/kapacitet og redesign er udenfor.
+## Udgangspunkt og prioritering
 
-Lokal frontend: http://127.0.0.1:5190, originalt commit f25fde8. Dependencies installeret med npm ci fra original lockfile. Node v24.13.0, Vite 8.2.1. Lint og build bestod før ændringer.
+Startkoden er commit `f25fde8`; audit og baseline blev gemt i `5123b7d`.
 
-Databasen er isoleret PGlite (PostgreSQL) med original starter.sql og fiktive seed-data. Lokal HTTP-adapter simulerer de anvendte REST-endpoints. Det er ikke Supabase/PostgREST og beviser ikke Supabase-konfiguration, RLS eller hosting. Ingen ændringer i live Supabase.
+Ved den første lokale kontrol viste oversigten ni events. Formularen på event 9 skrev kun input i konsollen: der blev ikke sendt en POST-request, og databasen havde fortsat to tilmeldinger. En simuleret GET-fejl med status 503 efterlod eventsiden uden indhold eller fejlbesked.
 
-To flows udført før ændringer: (1) eventoversigt → event 9 → indsendelse af formular, som kun loggede Object i console og beholdt input; databasen havde stadig 2 tilmeldinger. (2) direkte intern oversigt viste begge seed-tilmeldinger. Kontrolleret GET-fejl (503) gav eventside uden indhold/feedback ud over navbar.
+| Område | Problem | Prioritet og plan | Kontrol |
+| --- | --- | --- | --- |
+| Datamodel | Stedoplysninger gentages på events, og tilmeldinger har kopier af eventdata. | Høj: opret relationer, tilpas frontend og fjern kopifelter. | Migration, frisk database og fremmednøgler. |
+| Tilmelding | Formularen gemmer ikke input. | Høj: gem via POST og knyt tilmeldingen til eventet. | Tilmelding og korrekt event i oversigten efter genindlæsning. |
+| Fejlhåndtering | Et fejlet API-kald giver en tom eventside. | Høj: fælles API-håndtering og tydelige tilstande. | Fejl, tomme svar, ukendt event og forsinkede svar. |
+| Tilgængelighed | E-mailfeltet mangler en etiket, og oversigten er bygget med div-elementer. | Middel: feltetiketter, semantisk tabel og fokusmarkering. | Formularfelter, tabelstruktur og centralt tastaturflow. |
+| Eventskift | Tidligere formularfeedback kan følge med til et andet event. | Middel: nulstil siden ved ændret `eventId`. | Skift mellem events i samme React-session. |
+| Publicering | Startprojektets `/mellemrum/` passer ikke til dette repository. | Før publicering: brug `/case1/` til build og preview. | Direkte eventlink, genindlæsning og tilmelding. |
 
-Onlinebaseline: udleveret https://cederdorff.com/mellemrum/ indlæste 9 events ved browserkontrol. Screenshot gemt. Ingen testtilmelding sendt til underviserens løsning. Onlineversionens commit-identitet kan ikke fastslås her.
+## Gennemførte ændringer
 
-## Trin 3–5: fund, prioritering og færdigkriterier FØR implementering
+1. [Datamodel og relationer](01-data-model.md)
+2. [Tilmelding og arrangøroverblik](02-registration-flow.md)
+3. [Fejlhåndtering og tilgængelighed](03-robustness-accessibility.md)
+4. [Nulstilling ved eventskift](04-event-state.md)
+5. [Preview og kontrol af den publicerede løsning](05-production.md)
 
-| Område | Fund/evidens | Konsekvens | Planlagt løsning | Prioritet | Verifikation/færdigkriterium |
-|---|---|---|---|---|---|
-| Data | starter.sql gentager venue/eventfelter; 4 events bruger gentagne venues; baseline-db.json | Dobbeltvedligeholdelse og ingen eventrelation | Additive relationer først; fjern kopier efter frontendtilpasning | Høj | Migration på original DB; 9 events/7 venues/2 tilmeldinger med relationer; constraints testet |
-| Tilmelding | EventPage console.log; browser og DB viser ingen ny række | Central handling er ikke funktionel | POST og relationelle læsninger | Høj | Browser sender til event 9, success og ny korrekt relation i oversigt efter reload |
-| Robusthed | GET 503 giver tom eventside, baseline-fetch-error.png | Ingen forklaring eller næste skridt | Shared utility, states, cleanup | Høj | Kontrolleret 503, tomt svar, ukendt id, langsomt svar og afvist POST giver korrekte states |
-| Accessibility | E-mailfelt uden label; oversigt er div; før-screenshots og kode | Hjælpemidler mangler sammenhæng | Labels, feedback, tabel og fokus | Middel | DOM-semantik og centralt keyboardflow; ingen påstand om fuld compliance |
-| React-state | Kendt fund fra tidligere audit: eventId genbruger state | Tidligere indhold/feedback kan hænge ved | Remount per eventId | Middel | Same-session eventskift med tidligere formularstate nulstilles |
-| Deployment | Oprindelig base /mellemrum/ matcher ikke case1-repo | Assets/routes kan ramme forkert | Bevar kendt /case1/-konfiguration | Før publicering | Production preview og direkte route/reload; senere eksisterende live deployment sammenholdes |
+Hver del blev testet på sin feature branch og derefter flettet ind i `case1-replay-main`. Den tidligere historik blev bevaret ved merge til `main`.
 
-Arbejdsrækkefølge: audit → datamodel (additiv) → POST + relationelle læsninger → robusthed → accessibility → state-reset → samlet kontrol. Hver branch oprettes fra opdateret case1-replay-main og merges først efter dokumenteret test. Integrationsbranchen er adskilt fra det oprindelige main for at undgå historikomskrivning og liveændringer.
+| Feature branch | Ændring og test | Merge |
+| --- | --- | --- |
+| case1-replay-data-model | `71c57c0` | `f9573db` |
+| case1-replay-registration-flow | `5b97379` | `e6c2e91` |
+| case1-replay-robust-fetch | `928d470` | `7e1f716` |
+| case1-replay-event-reset | `dc923a2` | `4a10391` |
+| case1-replay-deployment | `4456639` | `8c5eb29` |
 
-## Evidens
+Integrationen med den tidligere historik er `c3be5c4`. Før preview-rettelsen var appfilerne identiske med den tidligere løsning; preview-rettelsen ændrede `vite.config.js`.
 
-Baseline-billeder: evidence/baseline-home.png, baseline-form.png, baseline-registrations.png, baseline-fetch-error.png og baseline-original-online.png. Databasekontrol: evidence/baseline-db.json. Netværkslog: evidence/network.jsonl (GET/POST, status og id'er; ingen credentials).
+## Testmiljø og dokumentation
 
-## Trin 6
+De kontrollerede fejltests brugte PGlite med den oprindelige `starter.sql` og fiktive testdata. En lokal HTTP-adapter efterlignede de REST-kald, som appen bruger. Det gjorde det muligt at styre fejl og forsinkelser. Testen kontrollerer appens adfærd og databaserelationer, men erstatter ikke en test af Supabase og dets adgangsregler. Den publicerede tilmelding blev derfor også kontrolleret separat mod Supabase; se [publiceringstesten](05-production.md#kontrol-efter-publicering).
 
-Udfyldes på hver feature branch efter faktisk implementering og test. Efterfølgende resultater må ikke skrives ind som oprindelig baseline.
+Frontend kørte på `http://127.0.0.1:5190`. Pakker blev installeret med `npm ci` fra den oprindelige lockfil. Node var 24.13.0 og Vite 8.2.1; lint og build bestod før ændringerne.
 
-## Gennemført rækkefølge og dokumentation
+Baseline-billederne ligger i `evidence/`: `baseline-home.png`, `baseline-form.png`, `baseline-registrations.png`, `baseline-fetch-error.png` og `baseline-original-online.png`. Databasekontrollen findes i `baseline-db.json` og netværkskald i `network.jsonl`.
 
-1. [Datamodel](01-data-model.md) — testet før merge.
-2. [Tilmeldingsflow](02-registration-flow.md) — testet før merge.
-3. [Robusthed og accessibility](03-robustness-accessibility.md) — testet før merge.
-4. [Event-state](04-event-state.md) — testet før merge.
-5. [Production/preview](05-production.md) — testet før merge.
+Underviserens [offentlige prototype](https://cederdorff.com/mellemrum/) viste også ni events. Der blev ikke sendt tilmeldinger til den. Git-versionen bag den offentlige prototype er ikke verificeret.
 
-Alle fem feature branches starter fra den løbende opdaterede case1-replay-main og får et eksplicit merge-commit efter test. Dette er en ny runde gennemført efter den første løsning; den erstatter ikke datoer eller historik fra det tidligere arbejde. Der påstås ingen uafhængigt nyopfundet implementering: kendte løsninger genbruges efter forudgående fund og efterfølgende ny test.
+## Resultat og næste skridt
 
-### Værdi, fravalg og begrænsninger
+Tilmeldinger gemmes og vises med det rigtige event. Datamodellen bruger relationer, og brugeren får feedback ved ventetid, fejl og manglende events. Det kan give færre afbrudte tilmeldinger og mindre dobbeltvedligeholdelse; effekten er ikke målt.
 
-De dokumenterede resultater er fungerende lokalt tilmeldingsflow, konsistente relationer, håndterede fejltilstande og frisk state ved testet navigation. Den nye preview-rettelse gør production-preview konsistent med deployment-base. Forventet forretningsværdi er færre afbrudte tilmeldinger og mindre dobbeltvedligeholdelse; det er ikke målt.
+[Lighthouse-sammenligningen og den efterfølgende CLS-rettelse](../lighthouse/2026-10-15/README.md) dokumenterer den senere kontrol af indlæsning og layoutstabilitet. HTTP 404 på den offentlige eventroute er fortsat en uløst publiceringsfejl. Betaling, login, kapacitetsstyring og visuelt redesign indgik ikke. En fuld skærmlæsertest er ikke gennemført.
 
-Betaling, login, kapacitet, redesign, fuld WCAG/skærmlæseraudit og performancebenchmarks er fravalgt. Den isolerede adapter kan ikke bevise live Supabase-konfiguration eller alle PostgREST-regler. Den tidligere publicerede løsning er bevaret og har separat dokumenteret onlinekontrol. En ny deployment af replay-historikken kræver en almindelig fremadrettet merge til main, aldrig force-push eller omdatering.
+## Migrationer
 
-## Leverancehistorik
-
-| Feature branch | Implementering og test | Efterfølgende merge til replay-integration |
-|---|---|---|
-| case1-replay-data-model | 71c57c0 | f9573db |
-| case1-replay-registration-flow | 5b97379 | e6c2e91 |
-| case1-replay-robust-fetch | 928d470 | 7e1f716 |
-| case1-replay-event-reset | dc923a2 | 4a10391 |
-| case1-replay-deployment | 4456639 | 8c5eb29 |
-
-Baseline/audit er 5123b7d. Den tidligere main-historik blev derefter bevaret med merge c3be5c4; ingen oprindelige commits er slettet eller omdateret. Produktets src-filer, package.json/lock og starter.sql blev sammenlignet med den tidligere main og var identiske før preview-fixet (som kun ændrer vite.config.js). Den nye historie erstatter ikke den tidligere proces, men dokumenterer en faktisk gentaget runde.
-
-001-add-relations.sql er kun til den originale schema-version i denne isolerede runde. Den skal ikke køres på den allerede normaliserede live-database. De øvrige migrationsfiler omfatter også tidligere leveringshistorik; ingen migration udføres automatisk ved deployment.
+`001-add-relations.sql` er beregnet til den oprindelige datamodel i det isolerede testmiljø. Den skal ikke køres på den allerede normaliserede database. Migrationerne køres ikke automatisk ved publicering. Se de enkelte filer og databasekontrollerne før manuel kørsel.

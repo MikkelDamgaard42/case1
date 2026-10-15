@@ -1,9 +1,19 @@
-# 1. Additive relationer
+# 1. Datamodel og relationer
 
-Førgrundlag: baseline-commit 5123b7d, original schema f25fde8. Problem/prioritet/færdigkriterium er registreret før ændringen i README.
+## Ændring
 
-Løsning: en migration opretter venues fra eksisterende felter, forbinder events og tilmeldinger og kræver eventId. Kopifelter bevares midlertidigt, så den gamle frontend fortsat virker indtil næste forbedring. Frisk starter.sql er tilpasset separat.
+Den oprindelige datamodel i `f25fde8` gentog stedoplysninger på events og eventdata på tilmeldinger. En migration oprettede `venues`, forbandt events med steder og tilmeldinger med events og gjorde `eventId` obligatorisk.
 
-Faktisk test: migration mod original isoleret PostgreSQL gav 9 events, 7 venues og 2 tilmeldinger med alle relationer bevaret. Frisk starter.sql blev kørt i en separat tom PostgreSQL-instans. INSERT med NULL eventId afvises med SQLSTATE 23502; ukendt eventId afvises med 23503. Se evidence/data-after.json og schema-fresh-test.json. Live Supabase er ikke ændret.
+Kopifelterne blev bevaret midlertidigt, så den gamle frontend kunne fungere under overgangen. De blev fjernet, efter at frontend var tilpasset. `starter.sql` blev også tilpasset til en ny database.
 
-Værdi: relationer og obligatorisk eventtilknytning, uden at gamle visninger ødelægges under overgangen. Kopifelternes endelige fjernelse gennemføres efter den relationelle frontend.
+## Test og resultat
+
+Migrationen blev kørt mod den oprindelige database i et isoleret PostgreSQL-miljø. Resultatet var ni events, syv steder og to tilmeldinger med korrekte relationer. Den tilpassede `starter.sql` blev desuden kørt i en tom database.
+
+- En tilmelding uden `eventId` blev afvist med SQLSTATE `23502`.
+- En tilmelding med et ukendt `eventId` blev afvist med SQLSTATE `23503`.
+- Resultater: [data-after.json](evidence/data-after.json) og [schema-fresh-test.json](evidence/schema-fresh-test.json).
+
+Testen ændrede ikke den offentlige Supabase-database. Audit og baseline er registreret i `5123b7d` før denne ændring.
+
+Relationerne samler oplysningerne ét sted og sikrer, at tilmeldinger henviser til et eksisterende event.

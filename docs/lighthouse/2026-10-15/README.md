@@ -1,11 +1,17 @@
-# Mellemrum — Lighthouse og CLS-rettelse, 15. oktober 2026
+# Mellemrum: Lighthouse og layoutstabilitet
 
-- [CLS-rettelsen: årsag, ændring, medianer og intervaller](cls-fix/README.md)
-- [Den oprindelige isolerede baseline/slut-sammenligning](comparison/README.md)
-- [Baseline/slutrapporterne som ZIP](comparison/mellemrum-foer-efter-rapporter.zip)
+Vi sammenlignede den oprindelige prototype med den færdige løsning gennem tre Lighthouse-målinger pr. side og version den 15. oktober 2026. Sammenligningen viste et layoutskift på eventsiden. Rettelsen fjernede skiftet i alle tre efterfølgende målinger: CLS faldt fra 0,601 til 0, og performance-scoren steg fra 56 til 79. LCP lå fortsat på cirka 5,8 sekunder.
 
-Rapporter, rådata og spor er flyttet fra /tmp til denne varige dokumentationsmappe. SHA-256 er kontrolleret efter flytningen; se archive-checksums.json. De oprindelige 12 målinger er bevaret, og de tre målinger efter CSS-rettelsen ligger separat. Der er desuden en særskilt fejlvisningskontrol.
+## Rapporter
 
-De eksisterende Git-kopier/worktrees under /tmp er midlertidige testmiljøer og er ikke flyttet. Gemte testværktøjer og manifester dokumenterer opsætningen; deres oprindelige relative worktree-stier skal genskabes eller justeres før genkørsel. Ingen tilmeldingsdata eller secrets er kopieret fra live-miljøet.
+- [Årsagen til layoutskiftet, CSS-rettelsen og de tre nye målinger](cls-fix/README.md)
+- [Sammenligning af den oprindelige prototype og versionen før CLS-rettelsen](comparison/README.md)
+- [De 12 sammenligningsmålinger som ZIP](comparison/mellemrum-foer-efter-rapporter.zip)
 
-Kun src/styles.css er ændret af denne rettelse. Den eksisterende lokale EventPage.jsx er bevaret. Ingen commit, push eller deployment. Den offentlige eventroutes HTTP 404 er et separat, urettet hostingfund.
+Rettelsen blev publiceret i commit `986fa7e`. En separat kontrol af den offentlige eventside målte efterfølgende CLS 0 og Performance 78. Den offentlige eventroute returnerer stadig HTTP 404, selvom browseren viser siden. Den offentlige Lighthouse-kontrol brugte derfor `--ignore-status-code` og skal læses separat fra de lokale målinger.
+
+## Testgrundlag
+
+Rapporterne indeholder HTML, JSON, Chrome-spor og testopsætning. De 12 oprindelige målinger og de tre målinger efter rettelsen er bevaret hver for sig. Der er også en separat kontrol af fejlvisningen ved HTTP 503.
+
+Filerne blev kopieret fra det midlertidige testmiljø og hashkontrolleret; se [archive-checksums.json](archive-checksums.json). Hashlisten beskriver den oprindelige arkivering. README-teksterne er siden redigeret; rapporter, rådata og testværktøjer er uændrede. De oprindelige README-filer findes i commit `986fa7e`. De midlertidige worktrees er ikke en del af arkivet. Ved genkørsel skal deres stier genskabes eller tilpasses i testværktøjerne. Testdataene er fiktive; arkivet indeholder ikke kopier af tilmeldingsdata eller hemmelige nøgler fra Supabase.
