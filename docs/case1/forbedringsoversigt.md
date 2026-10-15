@@ -2,7 +2,7 @@
 
 ## Afgrænsning
 
-Dette er en efterfølgende audit af startkode, commits, SQL og tests. Den konkrete Canvas-auditskabelon er ikke gennemgået her, så dokumentationen må ikke beskrives som en udfyldt version af netop den skabelon.
+Dette er en efterfølgende audit af startkode, commits, SQL og tests. Underviserens fulde auditskabelon blev senere gennemgået den 15. oktober 2026. Se [sammenhold med trin 1–6](audit-trin-1-6.md); den efterfølgende strukturering ændrer ikke tidspunktet for de oprindelige fund eller tests.
 
 Flere forbedringer blev først lavet samlet og derefter rekonstrueret i feature branches. Branchkæden er derfor en efterfølgende dokumentations- og leverancestruktur, ikke en fuldstændig historik over den oprindelige udviklingsrækkefølge.
 
