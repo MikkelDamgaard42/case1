@@ -1,0 +1,131 @@
+{
+  "verifiedOn": "2026-10-15",
+  "method": "Read-only REST requests; selected IDs and relationships only; no names, emails or API keys stored",
+  "results": [
+    {
+      "check": "schema",
+      "status": 401,
+      "error": "{\"message\":\"Secret API key required\",\"hint\":\"Only secret API keys can be used for this endpoint.\"}"
+    },
+    {
+      "check": "events",
+      "rows": [
+        {
+          "id": 1,
+          "venueId": 1,
+          "venue": {
+            "id": 1
+          }
+        },
+        {
+          "id": 2,
+          "venueId": 2,
+          "venue": {
+            "id": 2
+          }
+        },
+        {
+          "id": 3,
+          "venueId": 3,
+          "venue": {
+            "id": 3
+          }
+        },
+        {
+          "id": 4,
+          "venueId": 4,
+          "venue": {
+            "id": 4
+          }
+        },
+        {
+          "id": 5,
+          "venueId": 5,
+          "venue": {
+            "id": 5
+          }
+        },
+        {
+          "id": 6,
+          "venueId": 2,
+          "venue": {
+            "id": 2
+          }
+        },
+        {
+          "id": 7,
+          "venueId": 6,
+          "venue": {
+            "id": 6
+          }
+        },
+        {
+          "id": 8,
+          "venueId": 1,
+          "venue": {
+            "id": 1
+          }
+        },
+        {
+          "id": 9,
+          "venueId": 7,
+          "venue": {
+            "id": 7
+          }
+        }
+      ]
+    },
+    {
+      "check": "registrations",
+      "rows": [
+        {
+          "id": 1,
+          "eventId": 1,
+          "event": {
+            "id": 1
+          }
+        },
+        {
+          "id": 2,
+          "eventId": 3,
+          "event": {
+            "id": 3
+          }
+        },
+        {
+          "id": 4,
+          "eventId": 2,
+          "event": {
+            "id": 2
+          }
+        }
+      ]
+    },
+    {
+      "check": "venues",
+      "rows": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4
+        },
+        {
+          "id": 5
+        },
+        {
+          "id": 6
+        },
+        {
+          "id": 7
+        }
+      ]
+    }
+  ]
+}
