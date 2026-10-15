@@ -20,3 +20,8 @@
 {"time":"2026-10-15T15:03:31.311Z","method":"GET","path":"/registrations?select=id,name,email,status,event:events(title,date)&order=createdAt.desc","status":200,"count":3}
 {"time":"2026-10-15T15:03:35.573Z","method":"GET","path":"/registrations?select=id,name,email,status,event:events(title,date)&order=createdAt.desc","status":200,"count":3}
 {"time":"2026-10-15T15:03:35.575Z","method":"GET","path":"/registrations?select=id,name,email,status,event:events(title,date)&order=createdAt.desc","status":200,"count":3}
+{"time":"2026-10-15T15:04:11.377Z","method":"GET","path":"/registrations?select=id,name,email,status,event:events(title,date)&order=createdAt.desc","status":200,"count":3}
+{"time":"2026-10-15T15:04:11.378Z","method":"GET","path":"/registrations?select=id,name,email,status,event:events(title,date)&order=createdAt.desc","status":200,"count":3}
+{"time":"2026-10-15T15:04:19.634Z","method":"GET","path":"/events","status":503}
+{"time":"2026-10-15T15:04:44.097Z","method":"GET","path":"/events?select=id,title,summary,description,date,category,image,price,venue:venues(name,address,postalCode,city,website)&id=eq.9","status":200,"count":1}
+{"time":"2026-10-15T15:05:00.582Z","method":"POST","path":"/registrations","status":503}

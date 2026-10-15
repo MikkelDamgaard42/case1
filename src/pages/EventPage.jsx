@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
-
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const headers = {
-  apikey: import.meta.env.VITE_SUPABASE_APIKEY,
-  "Content-Type": "application/json"
-};
+import { fetchSupabase } from "../lib/supabase";
 
 export default function EventPage() {
   const { eventId } = useParams();
@@ -14,18 +9,38 @@ export default function EventPage() {
   const [email, setEmail] = useState("");
   const [submissionStatus, setSubmissionStatus] = useState("idle");
   const [submissionMessage, setSubmissionMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+  const [eventNotFound, setEventNotFound] = useState(false);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     async function getEvent() {
-      const response = await fetch(
-        `${SUPABASE_URL}/events?select=id,title,summary,description,date,category,image,price,venue:venues(name,address,postalCode,city,website)&id=eq.${eventId}`,
-        { headers },
-      );
-      const data = await response.json();
-      setEvent(data[0]);
+      try {
+        const response = await fetchSupabase(
+          `/events?select=id,title,summary,description,date,category,image,price,venue:venues(name,address,postalCode,city,website)&id=eq.${eventId}`,
+          { signal: controller.signal },
+        );
+        const data = await response.json();
+        setEvent(data[0] || null);
+        setEventNotFound(data.length === 0);
+      } catch (error) {
+        if (controller.signal.aborted) {
+          return;
+        }
+        console.error("Could not load event", error.details || error);
+        setLoadError("Eventet kunne ikke hentes lige nu. Prøv igen senere.");
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
     }
 
     getEvent();
+
+    return () => controller.abort();
   }, [eventId]);
 
   async function handleSubmit(eventSubmit) {
@@ -39,7 +54,9 @@ export default function EventPage() {
     const trimmedEmail = email.trim();
     if (!trimmedName || !trimmedEmail || !/^\S+@\S+\.\S+$/.test(trimmedEmail)) {
       setSubmissionStatus("error");
-      setSubmissionMessage("Indtast venligst et navn og en gyldig e-mailadresse.");
+      setSubmissionMessage(
+        "Indtast venligst et navn og en gyldig e-mailadresse.",
+      );
       return;
     }
 
@@ -47,9 +64,8 @@ export default function EventPage() {
     setSubmissionMessage("");
 
     try {
-      const response = await fetch(`${SUPABASE_URL}/registrations`, {
+      const response = await fetchSupabase("/registrations", {
         method: "POST",
-        headers,
         body: JSON.stringify({
           name: trimmedName,
           email: trimmedEmail,
@@ -65,7 +81,9 @@ export default function EventPage() {
           statusText: response.statusText,
           responseBody,
         });
-        throw new Error(`Registration request failed with status ${response.status}`);
+        throw new Error(
+          `Registration request failed with status ${response.status}`,
+        );
       }
 
       setName("");
@@ -79,11 +97,7 @@ export default function EventPage() {
     }
   }
 
-  if (!event) {
-    return null;
-  }
-
-  const date = new Date(event.date);
+  const date = event ? new Date(event.date) : null;
 
   return (
     <>
@@ -92,8 +106,18 @@ export default function EventPage() {
           ← Alle events
         </Link>
 
-        <section className="event-detail">
-          <img src={event.image} alt="" />
+        {isLoading && <p className="form-message" role="status">Henter event...</p>}
+        {!isLoading && loadError && (
+          <p className="form-message" role="alert">{loadError}</p>
+        )}
+        {!isLoading && !loadError && eventNotFound && (
+          <section className="form-message" aria-labelledby="event-not-found-title">
+            <h1 id="event-not-found-title">Eventet blev ikke fundet</h1>
+            <p>Det event, du leder efter, findes ikke længere.</p>
+          </section>
+        )}
+        {!isLoading && !loadError && event && <section className="event-detail">
+          <img src={event.image} alt={event.title} />
           <div className="event-detail-content">
             <p className="event-category">{event.category}</p>
             <h1>{event.title}</h1>
@@ -101,8 +125,16 @@ export default function EventPage() {
             <div className="detail-list">
               <p>
                 <strong>Dato</strong>
-                {date.toLocaleDateString("da-DK", { weekday: "long", day: "numeric", month: "long" })} kl.{" "}
-                {date.toLocaleTimeString("da-DK", { hour: "2-digit", minute: "2-digit" })}
+                {date.toLocaleDateString("da-DK", {
+                  weekday: "long",
+                  day: "numeric",
+                  month: "long",
+                })}{" "}
+                kl.{" "}
+                {date.toLocaleTimeString("da-DK", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
               </p>
               <p>
                 <strong>Sted</strong>
@@ -130,38 +162,52 @@ export default function EventPage() {
             </div>
             <p>{event.description}</p>
           </div>
-        </section>
+        </section>}
 
-        <section className="signup-panel">
+        {!isLoading && !loadError && event && <section className="signup-panel">
           <div>
             <p className="eyebrow dark">Tilmelding</p>
             <h2>Reserver din plads</h2>
-            <p>Udfyld formularen, så sender vi din tilmelding til arrangøren.</p>
+            <p>
+              Udfyld formularen, så sender vi din tilmelding til arrangøren.
+            </p>
           </div>
 
           <form onSubmit={handleSubmit}>
-            <label>
+            <label htmlFor="registration-name">
               Navn
               <input
+                id="registration-name"
                 value={name}
                 onChange={(inputEvent) => setName(inputEvent.target.value)}
+                autoComplete="name"
                 required
               />
             </label>
-            <span>E-mail</span>
+            <label htmlFor="registration-email">E-mail</label>
             <input
+              id="registration-email"
               type="email"
               value={email}
               onChange={(inputEvent) => setEmail(inputEvent.target.value)}
               placeholder="dig@example.com"
+              autoComplete="email"
               required
             />
             <button type="submit" disabled={submissionStatus === "loading"}>
               {submissionStatus === "loading" ? "Tilmelder..." : "Tilmeld mig"}
             </button>
-            {submissionMessage && <p className="form-message">{submissionMessage}</p>}
+            {submissionMessage && (
+              <p
+                className="form-message"
+                role={submissionStatus === "error" ? "alert" : "status"}
+                aria-live={submissionStatus === "error" ? "assertive" : "polite"}
+              >
+                {submissionMessage}
+              </p>
+            )}
           </form>
-        </section>
+        </section>}
       </main>
       <footer className="site-footer">
         <div className="footer-top">

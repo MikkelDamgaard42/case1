@@ -1,26 +1,39 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const headers = {
-  apikey: import.meta.env.VITE_SUPABASE_APIKEY,
-  "Content-Type": "application/json"
-};
+import { fetchSupabase } from "../lib/supabase";
 
 export default function RegistrationsPage() {
   const [registrations, setRegistrations] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
+    const controller = new AbortController();
+
     async function getRegistrations() {
-      const response = await fetch(
-        `${SUPABASE_URL}/registrations?select=id,name,email,status,event:events(title,date)&order=createdAt.desc`,
-        { headers },
-      );
-      const data = await response.json();
-      setRegistrations(data);
+      try {
+        const response = await fetchSupabase(
+          "/registrations?select=id,name,email,status,event:events(title,date)&order=createdAt.desc",
+          { signal: controller.signal },
+        );
+        const data = await response.json();
+        setRegistrations(data);
+      } catch (error) {
+        if (controller.signal.aborted) {
+          return;
+        }
+        console.error("Could not load registrations", error.details || error);
+        setErrorMessage("Tilmeldingerne kunne ikke hentes lige nu.");
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
     }
 
     getRegistrations();
+
+    return () => controller.abort();
   }, []);
 
   return (
@@ -32,27 +45,60 @@ export default function RegistrationsPage() {
       </header>
       <main>
         <div className="registration-list">
-          <div className="registration-row registration-labels">
-            <span>Navn</span>
-            <span>Event</span>
-            <span>Dato</span>
-            <span>Status</span>
-          </div>
-          {registrations.map((registration) => (
-            <div className="registration-row" key={registration.id}>
-              <div>
-                <strong>{registration.name}</strong>
-                <small>{registration.email}</small>
-              </div>
-              <span>{registration.event?.title || "Ukendt event"}</span>
-              <span>
-                {registration.event?.date
-                  ? new Date(registration.event.date).toLocaleDateString("da-DK")
-                  : "-"}
-              </span>
-              <span className="status">{registration.status}</span>
-            </div>
-          ))}
+          <table>
+            <caption className="sr-only">Alle tilmeldinger</caption>
+            <thead>
+              <tr className="registration-row registration-labels">
+                <th scope="col">Navn</th>
+                <th scope="col">Event</th>
+                <th scope="col">Dato</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {isLoading && (
+                <tr>
+                  <td className="form-message" colSpan="4" role="status">
+                    Henter tilmeldinger...
+                  </td>
+                </tr>
+              )}
+              {!isLoading && errorMessage && (
+                <tr>
+                  <td className="form-message" colSpan="4" role="alert">
+                    {errorMessage}
+                  </td>
+                </tr>
+              )}
+              {!isLoading && !errorMessage && registrations.length === 0 && (
+                <tr>
+                  <td className="form-message" colSpan="4">
+                    Der er ingen tilmeldinger endnu.
+                  </td>
+                </tr>
+              )}
+              {!isLoading && !errorMessage &&
+                registrations.map((registration) => (
+                  <tr className="registration-row" key={registration.id}>
+                    <td>
+                      <strong>{registration.name}</strong>
+                      <small>{registration.email}</small>
+                    </td>
+                    <td>{registration.event?.title || "Ukendt event"}</td>
+                    <td>
+                      {registration.event?.date
+                        ? new Date(registration.event.date).toLocaleDateString(
+                            "da-DK",
+                          )
+                        : "-"}
+                    </td>
+                    <td>
+                      <span className="status">{registration.status}</span>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
         </div>
       </main>
       <footer className="site-footer">
