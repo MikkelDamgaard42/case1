@@ -36,7 +36,7 @@ Branchene blev efterfølgende rekonstrueret som en lineær progression. De dokum
 ## Resterende mangler
 
 - Event-state-reset er lintet og buildet, men de specifikke browserflows ved eventskift er ikke browserverificeret.
-- Den manuelle tilmeldingstest blev udført før de seneste frontendændringer og verificerer ikke den nyeste kodeversion.
+- Lokale validerings- og netværkstests gælder en tidligere frontendversion. Den senere manuelle online-test af den publicerede version dokumenterer succesfuld tilmelding og visning af relaterede eventdata; se [deploymentstatus](deployment-status.md).
 - Deployment blev rapporteret som succesfuld, men browserflows på den publicerede løsning er kun delvist dokumenteret.
 - Der findes ingen automatiske browser- eller integrationstests i projektets scripts.
 - Performance, tilgængeligheds-compliance, konvertering og tidsbesparelse er ikke målt.

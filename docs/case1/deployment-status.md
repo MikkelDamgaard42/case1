@@ -18,8 +18,8 @@ Den tidligere VS Code-session rapporterede workflow-kørsel 38748253241 som `com
 | Relationelle REST-GET-kald | Udført | `datamodel-api-check.json` |
 | Lokal registration success | Udført på tidligere version | `tilmeldingsflow-verifikation.md` og tilmeldingsevidens |
 | Isoleret afbrudt POST | Udført på tidligere version | `tilmelding-netvaerksfejl.png` og arbejdsrapport |
-| Direkte eventlink online | Rapporteret udført | `case1-deployment-verifikation.md` |
-| Online registration success | Rapporteret udført | `case1-deployment-verifikation.md` |
+| Direkte eventlink online | Rapporteret udført | Den manuelle kontrol beskrevet nedenfor og [testrækken](evidence/deployment-test-offentlig.png) |
+| Online registration success | Rapporteret udført | Den manuelle kontrol beskrevet nedenfor og [testrækken](evidence/deployment-test-offentlig.png) |
 | Online oversigt efter særskilt genindlæsning | Ikke bekræftet | Arbejdsrapportens begrænsning |
 | Seneste EventPage state-reset i browser | Ikke udført | Ingen godkendt browserverifikation |
 
@@ -27,7 +27,7 @@ Den tidligere VS Code-session rapporterede workflow-kørsel 38748253241 som `com
 
 Lint og build viser, at kodebasen kan lintes og bygges. De viser ikke, at POST-flow, loading states, browsernavigation, direkte routes eller deployment fungerer i alle runtime-scenarier.
 
-De manuelle tilmeldingstests blev udført før de seneste frontendændringer og verificerer derfor ikke den nyeste version. Den offentlige kontrol dokumenterer enkelte onlineflows, men er ikke en fuld browseraudit.
+De lokale validerings- og netværkstests blev udført før de seneste frontendændringer. Den senere online-test gælder den publicerede løsning, rapporteret som db598ea, og dokumenterer de nedenstående centrale flows. Den er ikke en fuld browseraudit.
 
 ## Planlagte, ikke udførte tests
 
@@ -38,3 +38,13 @@ De manuelle tilmeldingstests blev udført før de seneste frontendændringer og 
 - Loading-state ved langsomt POST.
 - Keyboard- og skærmlæsergennemgang.
 - Direkte genindlæsning af alle publicerede routes.
+
+## Manuel onlinekontrol 15. oktober 2026
+
+Mikkel udførte kontrollen i browseren og rapporterede resultaterne i samtalen:
+
+1. Direkte åbning af `/case1/events/9` viste Søndagsjazz ved åen. Mikkel bekræftede, at siden stadig virkede efter genindlæsning.
+2. En fiktiv deployment-testtilmelding blev indsendt på eventet. Mikkel bekræftede, at succesbeskeden blev vist.
+3. På `/case1/tilmeldinger` viste et indsendt screenshot Deployment Test med Søndagsjazz ved åen, 15.11.2026 og status Ny. Den senere offentligt egnede optagelse af samme række findes [her](evidence/deployment-test-offentlig.png).
+
+Genindlæsning af onlineoversigten var en del af instruktionen, men blev ikke særskilt bekræftet. Billedet beviser visningen af rækken, ikke selve POST-requestet, genindlæsningen eller workflowets commit. Den samlede manuelle kontrol underbygger et gennemført flow; workflow/commit-koblingen bygger på den tidligere deploymentrapport.

@@ -37,7 +37,8 @@ Flere forbedringer blev først lavet samlet og derefter rekonstrueret i feature 
 - **Branch/commit:** `case1-registration-flow` / `33b65a8`; `case1-relational-fetching` / `b534398`.
 - **Verifikation:** Tidligere lokal manuel test observerede succesfeedback, tømt formular, ny række og relationel event/dato. Native required/email-validering og trim-validering blev også observeret.
 - **Værdi:** Sammenhæng fra eventopdagelse til tilmelding og arrangøroverblik.
-- **Begrænsning:** Testen blev udført før de seneste frontendændringer; den dokumenterer ikke den nyeste kodeversion. Konvertering og kapacitetsstyring er ikke målt.
+- **Senere onlineverifikation:** Den publicerede løsning viste succes efter en ny testtilmelding, og oversigten viste den med korrekt event, dato og status. Se [deploymentstatus](deployment-status.md) og [evidens](evidence/deployment-test-offentlig.png).
+- **Begrænsning:** De lokale valideringstests gælder den tidligere version. Onlinekontrollen dækker det normale tilmeldingsflow, ikke samtlige fejl- og navigationsscenarier. Konvertering og kapacitetsstyring er ikke målt.
 
 ### Robusthed og tilgængelighed
 
