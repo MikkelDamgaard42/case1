@@ -1,0 +1,60 @@
+{
+  "home": {
+    "baseline": {
+      "performance": 83,
+      "LCP": 4640.2209,
+      "CLS": 0,
+      "TBT": 0,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100
+    },
+    "final": {
+      "performance": 81,
+      "LCP": 5225.0905,
+      "CLS": 0,
+      "TBT": 0,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100
+    },
+    "deltaFinalMinusBaseline": {
+      "performance": -2,
+      "LCP": 584.8696,
+      "CLS": 0,
+      "TBT": 0,
+      "accessibility": 0,
+      "bestPractices": 0,
+      "seo": 0
+    }
+  },
+  "event-9": {
+    "baseline": {
+      "performance": 78,
+      "LCP": 5870.261500000001,
+      "CLS": 0,
+      "TBT": 0,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100
+    },
+    "final": {
+      "performance": 56.00000000000001,
+      "LCP": 5830.1667499999985,
+      "CLS": 0.6014580801944107,
+      "TBT": 0,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100
+    },
+    "deltaFinalMinusBaseline": {
+      "performance": -21.999999999999993,
+      "LCP": -40.09475000000293,
+      "CLS": 0.6014580801944107,
+      "TBT": 0,
+      "accessibility": 0,
+      "bestPractices": 0,
+      "seo": 0
+    }
+  }
+}

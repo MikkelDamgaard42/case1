@@ -1,0 +1,23 @@
+[
+  {
+    "round": 1,
+    "effectiveSettingsEqual": true,
+    "lighthouseAndChromeVersionEqual": true,
+    "loadedMobileViewportIdentical": true,
+    "eventImageBytes": 705461
+  },
+  {
+    "round": 2,
+    "effectiveSettingsEqual": true,
+    "lighthouseAndChromeVersionEqual": true,
+    "loadedMobileViewportIdentical": true,
+    "eventImageBytes": 705461
+  },
+  {
+    "round": 3,
+    "effectiveSettingsEqual": true,
+    "lighthouseAndChromeVersionEqual": true,
+    "loadedMobileViewportIdentical": true,
+    "eventImageBytes": 705461
+  }
+]

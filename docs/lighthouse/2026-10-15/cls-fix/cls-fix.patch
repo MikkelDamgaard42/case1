@@ -1,0 +1,13 @@
+diff --git a/src/styles.css b/src/styles.css
+index 4bb3252..1e2995e 100644
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -573,6 +573,8 @@ select:focus {
+ 
+ .event-page {
+   max-width: 1280px;
++  /* Reserve the first viewport while event data loads; the navbar is at least 80px tall. */
++  min-height: calc(100svh - 80px);
+ }
+ 
+ .back-link {

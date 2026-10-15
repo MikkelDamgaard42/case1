@@ -1,0 +1,37 @@
+{
+  "CLS": {
+    "median": 0,
+    "min": 0,
+    "max": 0
+  },
+  "LCP": {
+    "median": 5837.012999999999,
+    "min": 5660.957500000002,
+    "max": 5904.852749999998
+  },
+  "performance": {
+    "median": 79,
+    "min": 78,
+    "max": 79
+  },
+  "TBT": {
+    "median": 0,
+    "min": 0,
+    "max": 0
+  },
+  "accessibility": {
+    "median": 100,
+    "min": 100,
+    "max": 100
+  },
+  "bestPractices": {
+    "median": 100,
+    "min": 100,
+    "max": 100
+  },
+  "seo": {
+    "median": 100,
+    "min": 100,
+    "max": 100
+  }
+}

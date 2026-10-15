@@ -1,0 +1,62 @@
+[
+  {
+    "round": 1,
+    "page": "home",
+    "version": "baseline"
+  },
+  {
+    "round": 1,
+    "page": "home",
+    "version": "final"
+  },
+  {
+    "round": 1,
+    "page": "event-9",
+    "version": "baseline"
+  },
+  {
+    "round": 1,
+    "page": "event-9",
+    "version": "final"
+  },
+  {
+    "round": 2,
+    "page": "home",
+    "version": "final"
+  },
+  {
+    "round": 2,
+    "page": "home",
+    "version": "baseline"
+  },
+  {
+    "round": 2,
+    "page": "event-9",
+    "version": "final"
+  },
+  {
+    "round": 2,
+    "page": "event-9",
+    "version": "baseline"
+  },
+  {
+    "round": 3,
+    "page": "home",
+    "version": "baseline"
+  },
+  {
+    "round": 3,
+    "page": "home",
+    "version": "final"
+  },
+  {
+    "round": 3,
+    "page": "event-9",
+    "version": "baseline"
+  },
+  {
+    "round": 3,
+    "page": "event-9",
+    "version": "final"
+  }
+]

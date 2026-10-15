@@ -1,0 +1,131 @@
+
+$ git show --stat f25fde8
+commit f25fde8dec21b5d13fcca7bd7002d76de9c6cea1
+Author: MikkelDamgaard42 <eaa25midn@students.eaaa.dk>
+Date:   Tue Aug 25 13:48:04 2026 +0200
+
+    Initial commit
+
+ .env.example                               |    2 +
+ .github/workflows/deploy.yml               |   69 +
+ .gitignore                                 |   31 +
+ README.md                                  |  160 ++
+ docs/images/setup/copy-api-key.webp        |  Bin 0 -> 76178 bytes
+ docs/images/setup/copy-api-url.webp        |  Bin 0 -> 71542 bytes
+ docs/images/setup/paste-sql-in-editor.webp |  Bin 0 -> 90770 bytes
+ docs/images/setup/run-without-rls.webp     |  Bin 0 -> 56538 bytes
+ docs/images/setup/schema-visualiser.webp   |  Bin 0 -> 215686 bytes
+ docs/images/setup/table-events.webp        |  Bin 0 -> 314560 bytes
+ docs/images/setup/table-registrations.webp |  Bin 0 -> 192212 bytes
+ eslint.config.js                           |   29 +
+ index.html                                 |   14 +
+ package-lock.json                          | 2421 ++++++++++++++++++++++++++++
+ package.json                               |   33 +
+ public/logo.webp                           |  Bin 0 -> 14242 bytes
+ public/mellemrum-logo.svg                  |    9 +
+ public/mellemrum-mark.svg                  |    8 +
+ src/App.jsx                                |   22 +
+ src/components/Navbar.jsx                  |   15 +
+ src/main.jsx                               |   13 +
+ src/pages/AboutPage.jsx                    |  122 ++
+ src/pages/EventPage.jsx                    |  129 ++
+ src/pages/HomePage.jsx                     |  136 ++
+ src/pages/NotFoundPage.jsx                 |   43 +
+ src/pages/RegistrationsPage.jsx            |   81 +
+ src/styles.css                             |  898 +++++++++++
+ supabase/starter.sql                       |   77 +
+ vite.config.js                             |   11 +
+ 29 files changed, 4323 insertions(+)
+
+$ git diff f25fde8 8b529b2 -- src index.html vite.config.js supabase
+
+$ git log --first-parent --oneline --reverse
+f25fde8 Initial commit
+5123b7d Record fresh baseline and prioritized audit before replay changes
+f9573db Merge verified data model improvement
+e6c2e91 Merge verified relational registration flow
+7e1f716 Merge verified robust states and accessible feedback
+4a10391 Merge verified event state reset
+8c5eb29 Merge verified production preview improvement
+c3be5c4 Preserve previous delivery and add verified replay history
+3a4b41f Link verified replay delivery and clarify migration scope
+e0f5e16 Preserve instructor-template audit alongside fresh replay
+da11872 Record successful replay deployment and live registration reload
+
+$ git diff f25fde8 da11872 -- src/styles.css
+diff --git a/src/styles.css b/src/styles.css
+index ce6108d..4bb3252 100644
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -36,6 +36,14 @@ a {
+   color: inherit;
+ }
+ 
++a:focus-visible,
++button:focus-visible,
++input:focus-visible,
++select:focus-visible {
++  outline: 3px solid var(--orange);
++  outline-offset: 3px;
++}
++
+ button,
+ input,
+ select {
+@@ -209,6 +217,16 @@ select:focus {
+   outline: none;
+ }
+ 
++.sr-only {
++  clip: rect(0, 0, 0, 0);
++  clip-path: inset(50%);
++  height: 1px;
++  overflow: hidden;
++  position: absolute;
++  white-space: nowrap;
++  width: 1px;
++}
++
+ .event-grid {
+   display: grid;
+   gap: 1.5rem;
+@@ -662,6 +680,11 @@ select:focus {
+   overflow: hidden;
+ }
+ 
++.registration-list table {
++  border-collapse: collapse;
++  width: 100%;
++}
++
+ .registration-row {
+   align-items: center;
+   border-bottom: 1px solid var(--line);
+@@ -671,6 +694,15 @@ select:focus {
+   padding: 1rem 1.2rem;
+ }
+ 
++.registration-row th,
++.registration-row td {
++  text-align: left;
++}
++
++.registration-row td {
++  padding: 1rem 1.2rem;
++}
++
+ .registration-row:last-child {
+   border-bottom: 0;
+ }
+@@ -693,6 +725,11 @@ select:focus {
+   text-transform: uppercase;
+ }
+ 
++.registration-labels th {
++  padding: 1rem 1.2rem;
++  text-align: left;
++}
++
+ .status {
+   background: #dff3cc;
+   border-radius: 999px;

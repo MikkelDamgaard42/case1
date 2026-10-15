@@ -1,0 +1,50 @@
+[
+  {
+    "args": {
+      "data": {
+        "cumulative_score": 0,
+        "frame_max_distance": 1512.953125,
+        "had_recent_input": true,
+        "impacted_nodes": [
+          {
+            "new_rect": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "node_id": 25,
+            "old_rect": [
+              0,
+              328,
+              412,
+              495
+            ]
+          }
+        ],
+        "is_main_frame": true,
+        "last_input_timestamp": 9.700000002980232,
+        "overall_max_distance": 1512.953125,
+        "region_rects": [
+          [
+            0,
+            328,
+            412,
+            495
+          ]
+        ],
+        "score": 0.6014580801944107,
+        "weighted_score_delta": 0.6014580801944107
+      },
+      "frame": "F11F53A73AAFF39F86659D171455FD98"
+    },
+    "cat": "loading",
+    "name": "LayoutShift",
+    "ph": "I",
+    "pid": 85302,
+    "s": "t",
+    "tid": 2774687,
+    "ts": 104765147267,
+    "tts": 1158812
+  }
+]

@@ -573,6 +573,8 @@ select:focus {
 
 .event-page {
   max-width: 1280px;
+  /* Reserve the first viewport while event data loads; the navbar is at least 80px tall. */
+  min-height: calc(100svh - 80px);
 }
 
 .back-link {
