@@ -66,3 +66,9 @@ starter.sql er opdateret til en frisk database med venues → events → registr
 ### Forbedring: obligatorisk eventtilknytning
 
 Problem: en nullable fremmednøgle tillod tilmeldinger uden event. Konsekvens: intern oversigt kunne indeholde en tilmelding uden identificerbart arrangement. Løsning: NOT NULL på eventId, kombineret med den eksisterende fremmednøgle. Verifikation: 0 manglende koblinger før ændringen og is_nullable = NO efter ændringen. Værdi: databasen håndhæver nu obligatorisk tilknytning til et eksisterende event. En faktisk afvist ugyldig INSERT er endnu ikke testet.
+
+## Migration 002 udført og efterkontrolleret
+
+Mikkel kørte migration 002 i SQL Editor 15. oktober 2026. Resultatet fra information_schema.columns bekræfter, at alle otte kopifelter er fjernet og registrations.eventId stadig er NOT NULL. Efterfølgende kontrol: 9 events, 7 venues, 3 tilmeldinger, 9 events med venue via JOIN og 3 tilmeldinger med event via JOIN. Antallene stemmer med førkontrollen. Rækkerne og de kontrollerede relationer er bevaret. Dette erstatter pending-status i de tidligere arbejdsnoter ovenfor.
+
+Faktisk værdi: venueoplysninger lagres nu på venues og eventdata på events; tilmeldinger refererer til events. Modstridende kopier i de fjernede felter kan ikke længere opstå. Brugereffekt og tidsbesparelse er ikke målt. Formularens POST og frontend verificeres separat.
