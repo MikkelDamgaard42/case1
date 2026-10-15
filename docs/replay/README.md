@@ -50,3 +50,17 @@ Alle fem feature branches starter fra den løbende opdaterede case1-replay-main 
 De dokumenterede resultater er fungerende lokalt tilmeldingsflow, konsistente relationer, håndterede fejltilstande og frisk state ved testet navigation. Den nye preview-rettelse gør production-preview konsistent med deployment-base. Forventet forretningsværdi er færre afbrudte tilmeldinger og mindre dobbeltvedligeholdelse; det er ikke målt.
 
 Betaling, login, kapacitet, redesign, fuld WCAG/skærmlæseraudit og performancebenchmarks er fravalgt. Den isolerede adapter kan ikke bevise live Supabase-konfiguration eller alle PostgREST-regler. Den tidligere publicerede løsning er bevaret og har separat dokumenteret onlinekontrol. En ny deployment af replay-historikken kræver en almindelig fremadrettet merge til main, aldrig force-push eller omdatering.
+
+## Leverancehistorik
+
+| Feature branch | Implementering og test | Efterfølgende merge til replay-integration |
+|---|---|---|
+| case1-replay-data-model | 71c57c0 | f9573db |
+| case1-replay-registration-flow | 5b97379 | e6c2e91 |
+| case1-replay-robust-fetch | 928d470 | 7e1f716 |
+| case1-replay-event-reset | dc923a2 | 4a10391 |
+| case1-replay-deployment | 4456639 | 8c5eb29 |
+
+Baseline/audit er 5123b7d. Den tidligere main-historik blev derefter bevaret med merge c3be5c4; ingen oprindelige commits er slettet eller omdateret. Produktets src-filer, package.json/lock og starter.sql blev sammenlignet med den tidligere main og var identiske før preview-fixet (som kun ændrer vite.config.js). Den nye historie erstatter ikke den tidligere proces, men dokumenterer en faktisk gentaget runde.
+
+001-add-relations.sql er kun til den originale schema-version i denne isolerede runde. Den skal ikke køres på den allerede normaliserede live-database. De øvrige migrationsfiler omfatter også tidligere leveringshistorik; ingen migration udføres automatisk ved deployment.

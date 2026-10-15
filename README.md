@@ -1,3 +1,7 @@
+## Ny dokumenteret gennemgang
+
+Se [baseline, prioritering og fem testede forbedringsbranches](docs/replay/README.md). Denne nye runde blev gennemført efter den tidligere levering, med lokal isoleret database og eksplicitte tests før hver merge. Den tidligere historik er bevaret.
+
 # Mellemrum
 
 Mellemrum er en React-prototype for en lokal kultur- og eventplatform. Projektet er startpunktet for Case 1 i Product Optimization.

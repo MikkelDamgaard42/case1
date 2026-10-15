@@ -1,3 +1,5 @@
+> **Senere supplerende gennemgang:** [Ny baseline og fem testede forbedringer](../replay/README.md). Specifikke fejltilstande, state-skift og frisk lokal databaseopsætning er testet i den nye isolerede runde. Nedenstående begrænsninger beskriver den tidligere dokumentation og skal læses med den versionsafgrænsning.
+
 # Case 1 · Mellemrum
 
 Samlet dokumentation og råmateriale for Case 1. Dette er ikke den endelige portfolio-caseside.
