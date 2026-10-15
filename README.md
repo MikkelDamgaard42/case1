@@ -24,17 +24,26 @@ npm install
 
 Vent med at starte appen, til Supabase og `.env` er sat op i de næste trin.
 
-## 2. Opret tabeller og startdata i Supabase
+## 2. Datamodel og Supabase-opsætning
 
-Opret et nyt Supabase-projekt, eller åbn det projekt, du skal bruge til casen.
+Projektet bruger tre relationelle tabeller:
 
-Åbn filen [supabase/starter.sql](supabase/starter.sql) i VS Code. Du skal ikke skrive eller ændre SQL-koden nu. Markér hele filens indhold, og kopiér det.
+- `venues`: `id`, `name`, `address`, `postalCode`, `city`, `website`
+- `events`: eventfelter samt `venueId -> venues.id`
+- `registrations`: `id`, `createdAt`, `name`, `email`, `status` samt `eventId -> events.id`
 
-Gå derefter til **SQL Editor** i Supabase:
+### Frisk database
 
-1. Opret en ny query.
-2. Indsæt hele indholdet fra `starter.sql`.
-3. Klik på **Run**.
+Til en ny, tom database kan [supabase/starter.sql](supabase/starter.sql) bruges. Den opretter den normaliserede model og indsætter fiktive seed-data. Filen er beregnet til frisk opsætning og bør ikke køres blindt mod den eksisterende Case 1-database.
+
+### Eksisterende database
+
+Til en eksisterende database bruges migrationsfilerne i `supabase/migrations/` i den dokumenterede rækkefølge:
+
+1. `001-require-registration-event.sql` gør `registrations.eventId` obligatorisk efter relationerne er kontrolleret.
+2. `002-remove-duplicate-fields.sql` fjerner de gamle kopifelter fra `events` og `registrations`, når data og afhængigheder er kontrolleret.
+
+Kør migrationerne i Supabase SQL Editor, og kontrollér resultaterne med [supabase/checks/datamodel-audit.sql](supabase/checks/datamodel-audit.sql). Projektet ændrer ikke databasen automatisk fra frontend.
 
 ![SQL-koden indsat i Supabase SQL Editor](docs/images/setup/paste-sql-in-editor.webp)
 
@@ -43,8 +52,6 @@ Hvis Supabase viser advarslen på billedet nedenfor, skal du vælge **Run withou
 ![Supabase-advarsel med knappen Run without RLS](docs/images/setup/run-without-rls.webp)
 
 Det er et bevidst scopevalg i Case 1: Authentication og authorization indgår ikke, og den interne side skal derfor ikke adgangsbeskyttes. Brug kun de udleverede eller andre fiktive testdata – aldrig rigtige personoplysninger.
-
-SQL-filen opretter tabellerne `events` og `registrations` og indsætter de startdata, som appen forventer. Vent, til Supabase viser, at din query er gennemført.
 
 ### Kontrollér resultatet
 
@@ -56,7 +63,7 @@ Vælg derefter tabellen `registrations`. Her bør du kunne se de to starttilmeld
 
 ![Tilmeldinger i Supabase Table Editor](docs/images/setup/table-registrations.webp)
 
-Du kan også åbne **Database → Schema Visualizer**. Her skal du kunne se tabellerne `events` og `registrations`. De har endnu ingen relation til hinanden; det er en del af udgangspunktet for casen. Bemærk også, at flere events bruger samme venue, men gentager `venueName`, `venueAddress`, `venuePostalCode`, `venueCity` og `venueWebsite` direkte på hvert event.
+Du kan også åbne **Database → Schema Visualizer**. Her skal du kunne se relationerne `venues -> events -> registrations`. Event- og tilmeldingsdata hentes via deres fremmednøgler i frontend i stedet for via de tidligere duplicatede felter.
 
 ![Events og registrations i Supabase Schema Visualizer](docs/images/setup/schema-visualiser.webp)
 
@@ -95,7 +102,7 @@ VITE_SUPABASE_APIKEY=din-publishable-key
 
 Gem filen. `.env` er allerede tilføjet til `.gitignore` og skal ikke pushes til GitHub.
 
-## 4. Start appen
+## 4. Start appen og kontrollér brugerflows
 
 Kør udviklingsserveren:
 
@@ -109,9 +116,12 @@ Kontrollér, at:
 
 - forsiden viser events fra Supabase
 - du kan åbne en eventside
-- siden `/tilmeldinger` viser de eksisterende tilmeldinger
+- eventdetaljen viser venue-data fra den relaterede `venues`-række
+- en gyldig tilmelding sender `name`, `email`, `status: "Ny"` og det aktuelle `eventId` til Supabase
+- siden `/tilmeldinger` viser eventtitel og dato fra den relaterede event
+- invalid input, loading, succes og fejl giver forståelig feedback
 
-Tilmeldingsformularen logger foreløbig de indtastede værdier i konsollen. Den gemmer endnu ikke tilmeldingen i Supabase.
+Tilmeldingsformularen gemmer nye tilmeldinger via Supabase REST API. Den sender ikke de tidligere `eventTitle`, `eventDate` eller `eventLocation`-felter.
 
 ## 5. Deploy appen
 
