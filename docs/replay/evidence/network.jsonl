@@ -30,3 +30,8 @@
 {"time":"2026-10-15T15:06:27.890Z","method":"GET","path":"/events?select=id,title,summary,description,date,category,image,price,venue:venues(name,address,postalCode,city,website)&id=eq.1","status":200,"count":1}
 {"time":"2026-10-15T15:06:34.261Z","method":"GET","path":"/events?select=id,title,summary,description,date,category,image,price,venue:venues(name,address,postalCode,city,website)&id=eq.999999","status":200,"count":0}
 {"time":"2026-10-15T15:06:34.435Z","method":"GET","path":"/events?select=id,title,summary,description,date,category,image,price,venue:venues(name,address,postalCode,city,website)&id=eq.9","status":200,"count":1}
+{"time":"2026-10-15T15:08:31.979Z","method":"GET","path":"/events?select=id,title,summary,description,date,category,image,price,venue:venues(name,address,postalCode,city,website)&id=eq.9","status":200,"count":1}
+{"time":"2026-10-15T15:08:32.170Z","method":"GET","path":"/events?select=id,title,summary,description,date,category,image,price,venue:venues(name,address,postalCode,city,website)&id=eq.9","status":200,"count":1}
+{"time":"2026-10-15T15:08:46.429Z","method":"POST","path":"/registrations","status":201,"eventId":"9","id":4}
+{"time":"2026-10-15T15:08:54.778Z","method":"GET","path":"/registrations?select=id,name,email,status,event:events(title,date)&order=createdAt.desc","status":200,"count":4}
+{"time":"2026-10-15T15:08:54.887Z","method":"GET","path":"/registrations?select=id,name,email,status,event:events(title,date)&order=createdAt.desc","status":200,"count":4}

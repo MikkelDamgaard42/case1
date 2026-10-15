@@ -34,3 +34,19 @@ Baseline-billeder: evidence/baseline-home.png, baseline-form.png, baseline-regis
 ## Trin 6
 
 Udfyldes på hver feature branch efter faktisk implementering og test. Efterfølgende resultater må ikke skrives ind som oprindelig baseline.
+
+## Gennemført rækkefølge og dokumentation
+
+1. [Datamodel](01-data-model.md) — testet før merge.
+2. [Tilmeldingsflow](02-registration-flow.md) — testet før merge.
+3. [Robusthed og accessibility](03-robustness-accessibility.md) — testet før merge.
+4. [Event-state](04-event-state.md) — testet før merge.
+5. [Production/preview](05-production.md) — testet før merge.
+
+Alle fem feature branches starter fra den løbende opdaterede case1-replay-main og får et eksplicit merge-commit efter test. Dette er en ny runde gennemført efter den første løsning; den erstatter ikke datoer eller historik fra det tidligere arbejde. Der påstås ingen uafhængigt nyopfundet implementering: kendte løsninger genbruges efter forudgående fund og efterfølgende ny test.
+
+### Værdi, fravalg og begrænsninger
+
+De dokumenterede resultater er fungerende lokalt tilmeldingsflow, konsistente relationer, håndterede fejltilstande og frisk state ved testet navigation. Den nye preview-rettelse gør production-preview konsistent med deployment-base. Forventet forretningsværdi er færre afbrudte tilmeldinger og mindre dobbeltvedligeholdelse; det er ikke målt.
+
+Betaling, login, kapacitet, redesign, fuld WCAG/skærmlæseraudit og performancebenchmarks er fravalgt. Den isolerede adapter kan ikke bevise live Supabase-konfiguration eller alle PostgREST-regler. Den tidligere publicerede løsning er bevaret og har separat dokumenteret onlinekontrol. En ny deployment af replay-historikken kræver en almindelig fremadrettet merge til main, aldrig force-push eller omdatering.
