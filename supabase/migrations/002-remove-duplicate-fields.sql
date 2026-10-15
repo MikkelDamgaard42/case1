@@ -1,5 +1,6 @@
--- Applied by Mikkel in SQL Editor 2026-10-15; columns and row counts verified.
--- Reviewed after SQL Editor comparisons:
+-- Reapplied to the isolated replay test database after frontend adaptation.
+-- Earlier live migration was performed separately; this file is not rerun live.
+-- Reviewed comparison results:
 -- 0 venue differences and 0 non-null legacy registration differences.
 -- Removes only redundant columns; preserves rows and foreign keys.
 -- No CASCADE: unexpected dependent objects will block the transaction.
