@@ -36,6 +36,14 @@ a {
   color: inherit;
 }
 
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 3px;
+}
+
 button,
 input,
 select {
@@ -207,6 +215,16 @@ select:focus {
   border-color: var(--green);
   box-shadow: 0 0 0 3px rgba(23, 63, 53, 0.12);
   outline: none;
+}
+
+.sr-only {
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
 }
 
 .event-grid {
@@ -662,12 +680,26 @@ select:focus {
   overflow: hidden;
 }
 
+.registration-list table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
 .registration-row {
   align-items: center;
   border-bottom: 1px solid var(--line);
   display: grid;
   gap: 1rem;
   grid-template-columns: 1.2fr 1.5fr 0.7fr 0.5fr;
+  padding: 1rem 1.2rem;
+}
+
+.registration-row th,
+.registration-row td {
+  text-align: left;
+}
+
+.registration-row td {
   padding: 1rem 1.2rem;
 }
 
@@ -691,6 +723,11 @@ select:focus {
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.registration-labels th {
+  padding: 1rem 1.2rem;
+  text-align: left;
 }
 
 .status {
