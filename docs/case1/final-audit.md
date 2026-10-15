@@ -38,9 +38,9 @@ Rettelsen er lintet og buildet, men er endnu ikke browserverificeret.
 
 **Status: rettet i kode, browserverifikation mangler.**
 
-### 2. README beskriver stadig den gamle løsning
+### 2. README var tidligere forældet — rettet i dokumentationsbranchen
 
-README’en er ikke synkroniseret med den færdige løsning:
+Før dokumentationsbranchen var README’en ikke synkroniseret med den færdige løsning:
 
 - Den beskriver stadig ingen relation mellem `events` og `registrations` på [README.md](../../README.md#L59).
 - Den beskriver stadig duplicatede venuefelter som den aktuelle model på [README.md](../../README.md#L59).
@@ -49,7 +49,9 @@ README’en er ikke synkroniseret med den færdige løsning:
 
 Datamodeldokumentationen er nyere og mere korrekt, men README’en er stadig den primære opsætningsvejledning.
 
-**Prioritet: middel.**
+README’en er opdateret på `case1-documentation`. Den historiske mangel bevares her som auditspor.
+
+**Status: rettet i dokumentationen.**
 
 ### 3. Deployment er ikke verificeret end-to-end
 
@@ -102,7 +104,7 @@ Auditfilen dokumenterer kun read-only relationelle GET-kald og udvalgte ID’er.
 ### Fejl eller reel risiko
 
 1. EventPage-stateproblemet er rettet i `4938707`, men mangler browserverifikation.
-2. README’en indeholder væsentlig forældet information om datamodel og registration flow.
+2. Den dokumenterede tilmeldingstest blev udført før de seneste frontendændringer.
 3. Production deployment og direkte route-genindlæsning er ikke dokumenteret som faktisk verificeret.
 
 ### Valgfrie forbedringer

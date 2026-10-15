@@ -33,16 +33,14 @@ Rå resultater: `datamodel-api-check.json`. Kun id'er og relationer er hentet fo
 
 Dette viser fungerende relationelle læsninger for de eksisterende data. Det dokumenterer ikke POST-flow, alle databaseconstraints eller deployment.
 
-## Resterende kontrol før færdiggørelse
+## Kontrolmetode
 
-Kør `supabase/checks/datamodel-audit.sql` i Supabase SQL Editor og gem alle tre resultatsæt. Forespørgslen læser kun skema og antal; den ændrer intet.
+Filen `supabase/checks/datamodel-audit.sql` er en read-only kontrol til Supabase SQL Editor. Den læser skema, constraints, rækkeantal og brudte relationer; den ændrer intet. De dokumenterede SQL Editor-resultater er gengivet i afsnittene nedenfor.
 
 1. Kontrollér de faktiske felter og hvilke der tillader NULL.
 2. Kontrollér fremmednøgler og øvrige constraints.
 3. Kontrollér manglende og brudte relationer (forventet 0).
-4. Beslut og dokumentér migration af gamle kopifelter og obligatorisk eventId, når skemaet er kendt. Fjern ikke gamle felter uden kontrol af data og afhængigheder.
-
-Den tidligere starter.sql beholdt gamle kopifelter. Den faktiske database beholder dem stadig indtil migration 002 er kørt. Den opdaterede starter.sql opretter en model uden kopifelterne; filen indeholder seed-data og bør ikke køres blindt mod den eksisterende database.
+4. Brug migrationsfilerne til den eksisterende database og `starter.sql` kun til en frisk database. Migration 002 er efterfølgende kørt og kontrolleret; `starter.sql` er ikke afprøvet i en tom PostgreSQL-database.
 
 ## Forventet værdi
 
@@ -59,7 +57,7 @@ Mikkel leverede følgende faktiske resultater i samtalen den 15. oktober 2026:
 - Sammenligning af samtlige fem gamle venuefelter med venues: 0 rækker med forskelle.
 - Sammenligning af udfyldte gamle eventfelter på tilmeldinger med events/venues: 0 rækker med forskelle.
 
-Den udførte NOT NULL-rettelse er bevaret som migrationsfil 001. Fjernelse af de otte kopifelter er forberedt i migration 002, men er endnu ikke kørt eller verificeret. Den nuværende frontend bruger relationerne; søgning i src har ingen referencer til de otte gamle feltnavne.
+Den udførte NOT NULL-rettelse er bevaret som migrationsfil 001. Fjernelsen af de otte kopifelter er udført via migration 002 og verificeret. Den nuværende frontend bruger relationerne; søgning i src har ingen referencer til de otte gamle feltnavne.
 
 starter.sql er opdateret til en frisk database med venues → events → registrations, direkte fremmednøgler i seed-data og obligatorisk eventId. Den opdaterede opsætning er endnu ikke afprøvet i en tom PostgreSQL-database. Brug migrationsfilerne til det eksisterende projekt i stedet for at genkøre seed-data.
 

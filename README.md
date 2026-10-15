@@ -2,6 +2,8 @@
 
 Mellemrum er en React-prototype for en lokal kultur- og eventplatform. Projektet er startpunktet for Case 1 i Product Optimization.
 
+Se [Case 1-dokumentationen](docs/case1/README.md) for datamodel, branchkæde, audit, evidens og verifikationsstatus.
+
 Den primære målgruppe er personer, der ønsker en enkel vej til at opdage og tilmelde sig lokale kulturoplevelser i Aarhus. Arrangører er en sekundær målgruppe, som bruger platformen til at dele events og få overblik over tilmeldinger.
 
 Guiden hjælper dig med at få React-projektet til at køre lokalt og forbinde det til dit eget Supabase-projekt. Du behøver ikke kunne skrive SQL for at følge opsætningen.

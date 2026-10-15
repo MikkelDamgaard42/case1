@@ -30,7 +30,7 @@ Den eksisterende `AbortController` og kontrollen mod opdateringer fra afbrudte r
 ## Verifikation udført
 
 - `npm run lint`: bestået.
-- `npm run build`: køres efter commitforberedelsen og skal bestå.
+- `npm run build`: bestået på `case1-event-state-reset`.
 - Koden blev gennemgået for at sikre, at det normaliserede POST-payload med `eventId` ikke er ændret.
 - Ingen databasefiler, dependencies eller README blev ændret.
 
