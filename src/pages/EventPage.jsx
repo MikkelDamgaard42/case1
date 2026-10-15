@@ -12,10 +12,15 @@ export default function EventPage() {
   const [event, setEvent] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [submissionStatus, setSubmissionStatus] = useState("idle");
+  const [submissionMessage, setSubmissionMessage] = useState("");
 
   useEffect(() => {
     async function getEvent() {
-      const response = await fetch(`${SUPABASE_URL}/events?id=eq.${eventId}`, { headers });
+      const response = await fetch(
+        `${SUPABASE_URL}/events?select=id,title,summary,description,date,category,image,price,venue:venues(name,address,postalCode,city,website)&id=eq.${eventId}`,
+        { headers },
+      );
       const data = await response.json();
       setEvent(data[0]);
     }
@@ -25,7 +30,53 @@ export default function EventPage() {
 
   async function handleSubmit(eventSubmit) {
     eventSubmit.preventDefault();
-    console.log({ name, email, event: event.title });
+
+    if (submissionStatus === "loading") {
+      return;
+    }
+
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    if (!trimmedName || !trimmedEmail || !/^\S+@\S+\.\S+$/.test(trimmedEmail)) {
+      setSubmissionStatus("error");
+      setSubmissionMessage("Indtast venligst et navn og en gyldig e-mailadresse.");
+      return;
+    }
+
+    setSubmissionStatus("loading");
+    setSubmissionMessage("");
+
+    try {
+      const response = await fetch(`${SUPABASE_URL}/registrations`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          name: trimmedName,
+          email: trimmedEmail,
+          status: "Ny",
+          eventId,
+        }),
+      });
+
+      if (!response.ok) {
+        const responseBody = await response.text();
+        console.error("Supabase registration failed", {
+          status: response.status,
+          statusText: response.statusText,
+          responseBody,
+        });
+        throw new Error(`Registration request failed with status ${response.status}`);
+      }
+
+      setName("");
+      setEmail("");
+      setSubmissionStatus("success");
+      setSubmissionMessage("Tak for din tilmelding. Din plads er reserveret.");
+    } catch (error) {
+      console.error("Could not save registration", error);
+      setSubmissionStatus("error");
+      setSubmissionMessage("Tilmeldingen kunne ikke gemmes. Prøv igen.");
+    }
   }
 
   if (!event) {
@@ -55,17 +106,22 @@ export default function EventPage() {
               </p>
               <p>
                 <strong>Sted</strong>
-                <span>
-                  {event.venueName}
-                  <br />
-                  {event.venueAddress}, {event.venuePostalCode} {event.venueCity}
-                  {event.venueWebsite && (
-                    <>
-                      <br />
-                      <a href={event.venueWebsite}>Besøg venue</a>
-                    </>
-                  )}
-                </span>
+                {event.venue ? (
+                  <span>
+                    {event.venue.name}
+                    <br />
+                    {event.venue.address}, {event.venue.postalCode}{" "}
+                    {event.venue.city}
+                    {event.venue.website && (
+                      <>
+                        <br />
+                        <a href={event.venue.website}>Besøg venue</a>
+                      </>
+                    )}
+                  </span>
+                ) : (
+                  <span>Sted ikke angivet</span>
+                )}
               </p>
               <p>
                 <strong>Pris</strong>
@@ -86,15 +142,24 @@ export default function EventPage() {
           <form onSubmit={handleSubmit}>
             <label>
               Navn
-              <input value={name} onChange={(inputEvent) => setName(inputEvent.target.value)} />
+              <input
+                value={name}
+                onChange={(inputEvent) => setName(inputEvent.target.value)}
+                required
+              />
             </label>
             <span>E-mail</span>
             <input
+              type="email"
               value={email}
               onChange={(inputEvent) => setEmail(inputEvent.target.value)}
               placeholder="dig@example.com"
+              required
             />
-            <button type="submit">Tilmeld mig</button>
+            <button type="submit" disabled={submissionStatus === "loading"}>
+              {submissionStatus === "loading" ? "Tilmelder..." : "Tilmeld mig"}
+            </button>
+            {submissionMessage && <p className="form-message">{submissionMessage}</p>}
           </form>
         </section>
       </main>

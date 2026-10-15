@@ -6,3 +6,17 @@
 {"time":"2026-10-15T15:00:39.954Z","method":"GET","path":"/events","status":503}
 {"time":"2026-10-15T15:01:07.834Z","method":"GET","path":"/registrations?order=createdAt.desc","status":200,"count":2}
 {"time":"2026-10-15T15:01:07.836Z","method":"GET","path":"/registrations?order=createdAt.desc","status":200,"count":2}
+{"time":"2026-10-15T15:02:41.163Z","method":"GET","path":"/events?id=eq.9","status":200,"count":1}
+{"time":"2026-10-15T15:02:41.164Z","method":"GET","path":"/events?id=eq.9","status":200,"count":1}
+{"time":"2026-10-15T15:02:46.064Z","method":"GET","path":"/events?id=eq.9","status":200,"count":1}
+{"time":"2026-10-15T15:02:46.065Z","method":"GET","path":"/events?id=eq.9","status":200,"count":1}
+{"time":"2026-10-15T15:02:52.448Z","method":"GET","path":"/events?select=id,venue:venues(name)&id=eq.9","status":200,"count":1}
+{"time":"2026-10-15T15:03:19.575Z","method":"GET","path":"/events?select=id,title,summary,description,date,category,image,price,venue:venues(name,address,postalCode,city,website)&id=eq.9","status":200,"count":1}
+{"time":"2026-10-15T15:03:19.576Z","method":"GET","path":"/events?select=id,title,summary,description,date,category,image,price,venue:venues(name,address,postalCode,city,website)&id=eq.9","status":200,"count":1}
+{"time":"2026-10-15T15:03:23.510Z","method":"GET","path":"/events?select=id,title,summary,description,date,category,image,price,venue:venues(name,address,postalCode,city,website)&id=eq.9","status":200,"count":1}
+{"time":"2026-10-15T15:03:23.511Z","method":"GET","path":"/events?select=id,title,summary,description,date,category,image,price,venue:venues(name,address,postalCode,city,website)&id=eq.9","status":200,"count":1}
+{"time":"2026-10-15T15:03:30.957Z","method":"POST","path":"/registrations","status":201,"eventId":"9","id":3}
+{"time":"2026-10-15T15:03:31.310Z","method":"GET","path":"/registrations?select=id,name,email,status,event:events(title,date)&order=createdAt.desc","status":200,"count":3}
+{"time":"2026-10-15T15:03:31.311Z","method":"GET","path":"/registrations?select=id,name,email,status,event:events(title,date)&order=createdAt.desc","status":200,"count":3}
+{"time":"2026-10-15T15:03:35.573Z","method":"GET","path":"/registrations?select=id,name,email,status,event:events(title,date)&order=createdAt.desc","status":200,"count":3}
+{"time":"2026-10-15T15:03:35.575Z","method":"GET","path":"/registrations?select=id,name,email,status,event:events(title,date)&order=createdAt.desc","status":200,"count":3}
