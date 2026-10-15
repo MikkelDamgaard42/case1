@@ -1,0 +1,8 @@
+{"time":"2026-10-15T15:00:15.084Z","method":"GET","path":"/events?order=date.asc","status":200,"count":9}
+{"time":"2026-10-15T15:00:15.086Z","method":"GET","path":"/events?order=date.asc","status":200,"count":9}
+{"time":"2026-10-15T15:00:21.432Z","method":"GET","path":"/events?id=eq.9","status":200,"count":1}
+{"time":"2026-10-15T15:00:21.434Z","method":"GET","path":"/events?id=eq.9","status":200,"count":1}
+{"time":"2026-10-15T15:00:39.954Z","method":"GET","path":"/events","status":503}
+{"time":"2026-10-15T15:00:39.954Z","method":"GET","path":"/events","status":503}
+{"time":"2026-10-15T15:01:07.834Z","method":"GET","path":"/registrations?order=createdAt.desc","status":200,"count":2}
+{"time":"2026-10-15T15:01:07.836Z","method":"GET","path":"/registrations?order=createdAt.desc","status":200,"count":2}

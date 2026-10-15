@@ -1,0 +1,1 @@
+[{"rows":[{"registrations":2}],"fields":[{"name":"registrations","dataTypeID":20}],"command":"SELECT","affectedRows":0,"rowCount":1},{"rows":[{"duplicate_venue_rows":4}],"fields":[{"name":"duplicate_venue_rows","dataTypeID":20}],"command":"SELECT","affectedRows":0,"rowCount":1}]
